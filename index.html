@@ -17,6 +17,8 @@
                 <ul>
                     <li><a href="">Browse</a></li>
                     <li><a href="">About</a></li>
+                    <li><a href="create.html">Create</a>
+                    <li><a href="modify.html">Modify</a>
                 </ul>
             </nav>
             <div class="search">
@@ -30,66 +32,6 @@
             </div>
         </header>
         <div class="index-content">
-            <div class="input-form">
-                <form action=""                                             id="inputForm">
-                    <textarea name="text" id="text" placeholder="Enter text here..."></textarea>
-                    <div class="save-as">
-                        <button type="submit" id="submit">Submit</button>
-                        <button type="button" id="draft">Save as Draft</button>
-                        <button type="reset" id="reset">Reset</button>
-                    </div>
-                </form>
-            </div>
-
-            <div class="divider">
-                <button id="toggle-settings"><</button>
-            </div>
-
-            <div class="settings-form">
-                <div class="minimize">
-                    <h3>Settings</h3>
-                    <button id="minimize-button">&times;</button>
-                </div>
-                <form action="" id="settingsForm">
-                    <div class="form-group">
-                        <label for="title">Title:</label>
-                        <input type="text" id="title" name="title" placeholder="Enter title...">
-                    </div>
-                    <div class="form-group">
-                        <label for="description">Description:</label>
-                        <input type="text" id="description" name="description" placeholder="Enter description...">
-                    </div>
-                    <div class="form-group">
-                        <label for="tags-input">Tags:</label>
-                        <div class="tags-container">
-                            <input type="text" id="tags-input" name="tags" placeholder="Enter tags separated by commas...">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="visibility">Visibility:</label>
-                        <select id="visibility" name="visibility">
-                            <option value="public" selected>Public</option>
-                            <option value="private">Private</option>
-                            <option value="unlisted">Unlisted</option>
-                            <option value="specific">Specific</option>
-                        </select>
-                    </div>
-                    <div id="visibility-popup">
-                        
-                    </div>
-                    <div class="form-group">
-                        <label for="duration">Duration:</label>
-                        <select id="duration" name="duration">
-                            <option value="views">Views</option>
-                            <option value="time" selected>Time</option>
-                            <option value="indefinitely">Indefinitely</option>
-                        </select>
-                    </div>
-                    <div id="duration-popup"></div>
-
-                    <button type="reset" id="reset-settings">Reset</button>
-                </form>
-            </div>
         </div>
     </div>
     <!-- <script src="{{ url_for('static', filename='js/main.js') }}"></script> -->

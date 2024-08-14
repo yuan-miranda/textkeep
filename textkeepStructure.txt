@@ -43,19 +43,32 @@ TEXT - Text created
 		views (unique views)
 
 	VISIBLE DETAILS ON CREATE
+		title
+		description
+		tags
+		visibility
+		duration
+	CUSTOMIZABLE INPUTS ON CREATE
+		title
+		description
+		tags
+		visibility
+		duration
+
+	VISIBLE DETAILS ON MODIFY
+		title
+		description
+		tags
+		visibility [locked]
+		duration [locked]
+		message_id
 		date_created
-		visibility
-		duration
+		date_modified
+		delete [button]
+	CUSTOMIZABLE DETAILS ON MODIFY
 		title
 		description
 		tags
-	CUSTOMIZABLE INPUTS
-		visibility
-		duration
-		title
-		description
-		tags
-		
 
 TECHNICAL
 	- Server has 8GiB of storage. (EC2)
