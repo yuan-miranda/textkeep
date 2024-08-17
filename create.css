@@ -26,7 +26,7 @@ body .create-container header {
 }
 
 body .create-container header .logo {
-    margin-left: 20px;
+    margin-left: 10px;
 }
 
 body .create-container header .logo h1 a {
@@ -228,6 +228,7 @@ body .create-container .index-content .settings-form form .form-group select {
 }
 
 body .create-container .index-content .settings-form form .form-group .tags-container {
+    overflow: auto;
     display: flex;
     flex-wrap: wrap;
     border: 1px solid #8F8F9D;
@@ -299,7 +300,7 @@ body .create-container .index-content .settings-form form #visibility-popup .spe
     box-shadow: 0 0 0 1px #007bff;
 }
 
-body .create-container .index-content .settings-form form #visibility-popup .specific-users-tags-container #specific-users {
+body .create-container .index-content .settings-form form #visibility-popup .specific-users-tags-container #specific-users-tags-input {
     border: none;
     outline: none;
     flex: 1;

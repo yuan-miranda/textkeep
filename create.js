@@ -1,16 +1,6 @@
-const triggerChange = (element) => {
-    const event = new Event("change");
+const triggerEvent = (element, eventType) => {
+    const event = new Event(eventType);
     element.dispatchEvent(event);
-}
-
-const triggerToggle = (element) => {
-    const event = new Event("click");
-    element.dispatchEvent(event);
-}
-
-function removeBorderOnInteract(element) {
-    element.addEventListener("focus", () => element.style.border = "");
-    element.addEventListener("input", () => element.style.border = "");
 }
 
 function visibilityModes() {
@@ -22,7 +12,6 @@ function visibilityModes() {
         const pNote = document.createElement("p");
         pNote.style.fontSize = "12px";
         pNote.style.color = "gray";
-
         visibilityPopUp.innerHTML = "";
         if (visibilitySelect.value === "public") {
             pNote.innerHTML = "*Your text will be possibly shown in the main page.*";
@@ -41,7 +30,8 @@ function visibilityModes() {
             const specificUsersField = document.createElement("input");
             pNote.innerHTML = "*Specific means that you can choose who can access your content.*";
             specificUsersTagsContainer.className = "specific-users-tags-container";
-            specificUsersField.id = "specific-users";
+            specificUsersTagsContainer.style.overflow = "auto";
+            specificUsersField.id = "specific-users-tags-input";
             specificUsersField.type = "text";
             specificUsersField.placeholder = "Enter UID/Username separated by commas...";
             visibilityPopUp.appendChild(pNote);
@@ -50,7 +40,7 @@ function visibilityModes() {
             createSpecificUsersTags();
         }
     });
-    triggerChange(visibilitySelect);
+    triggerEvent(visibilitySelect, "change");
 }
 
 function durationModes() {
@@ -62,7 +52,6 @@ function durationModes() {
         const pNote = document.createElement("p");
         pNote.style.fontSize = "12px";
         pNote.style.color = "gray";
-
         durationPopUp.innerHTML = "";
         if (durationSelect.value === "views") {
             const viewField = document.createElement("input");
@@ -89,7 +78,7 @@ function durationModes() {
             durationPopUp.appendChild(pNote);
         }
     });
-    triggerChange(durationSelect);
+    triggerEvent(durationSelect, "change");
 }
 
 function resizeDivider() {
@@ -97,14 +86,12 @@ function resizeDivider() {
     const inputForm = document.querySelector(".input-form");
     const settingsForm = document.querySelector(".settings-form");
     let isDragging = false;
-
     if (!divider) return;
     divider.addEventListener("mousedown", () => {
         isDragging = true;
         document.body.style.cursor = "col-resize";
         document.body.style.userSelect = "none";
     });
-
     if (!inputForm || !settingsForm) return;
     document.addEventListener("mouseup", (e) => {
         isDragging = false;
@@ -123,7 +110,6 @@ function resizeDivider() {
 
 function minimizeSettings() {
     const minimizeButton = document.getElementById("minimize-button");
-
     if (!minimizeButton) return;
     minimizeButton.addEventListener("click", () => {
         hideSettings();
@@ -135,7 +121,6 @@ function showSettings() {
     const inputForm = document.querySelector(".input-form");
     const divider = document.querySelector(".divider");
     const toggleSettingsButton = document.getElementById("toggle-settings");
-
     settingsForm.style.display = "flex";
     inputForm.style.flex = 2;
     settingsForm.style.flex = 0.5;
@@ -148,7 +133,6 @@ function hideSettings() {
     const inputForm = document.querySelector(".input-form");
     const divider = document.querySelector(".divider");
     const toggleSettingsButton = document.getElementById("toggle-settings");
-
     settingsForm.style.display = "none";
     inputForm.style.flex = 1;
     toggleSettingsButton.textContent = "<";
@@ -158,7 +142,6 @@ function hideSettings() {
 function toggleSettings() {
     const toggleSettingsButton = document.getElementById("toggle-settings");
     if (toggleSettingsButton.textContent === "<") hideSettings();
-    
     if (!toggleSettingsButton) return;
     toggleSettingsButton.addEventListener("click", () => {
         if (toggleSettingsButton.textContent === "<") showSettings();
@@ -166,121 +149,150 @@ function toggleSettings() {
     });
 }
 
-function createTags() {
+function saveTag(tagsContainer, tagSpanName) {
+    const tags = [];
+    tagsContainer.querySelectorAll(`.${tagSpanName}`).forEach(tag => tags.push(tag.textContent.slice(0, -2)));
+    localStorage.setItem(`${tagSpanName}`, JSON.stringify(tags));
+}
+
+function loadTags(tagsContainer, tagsInput, tagSpanName, tagCloseName) {
+    const tags = JSON.parse(localStorage.getItem(`${tagSpanName}`)) || [];
+    tags.forEach(tagText => {
+        createTag(tagText, tagsContainer, tagsInput, tagSpanName, tagCloseName);
+    });
+}
+
+function createTag(tagText, tagsContainer, tagsInput, tagSpanName, tagCloseName) {
+    const tagElement = document.createElement("span");
+    tagElement.className = tagSpanName;
+    tagElement.innerHTML = `${tagText} <span class="${tagCloseName}">&times;</span>`;
+    tagsContainer.insertBefore(tagElement, tagsInput);
+    tagElement.querySelector(`.${tagCloseName}`).addEventListener("click", () => {
+        tagsContainer.removeChild(tagElement);
+        saveTag(tagsContainer, tagSpanName);
+    });
+    tagsInput.value = "";
+}
+
+function removeTag(tagsContainer, tagsInput, tagSpanName) {
+    if (tagsInput.value) return;
+    const tagElements = tagsContainer.querySelectorAll(`.${tagSpanName}`);
+    if (tagElements.length === 0) return;
+    tagsContainer.removeChild(tagElements[tagElements.length - 1]);
+    saveTag(tagsContainer, tagSpanName);
+}
+
+function createTagsListeners(tagsContainer, tagsInput, tagSpanName, tagCloseName) {
+    loadTags(tagsContainer, tagsInput, tagSpanName, tagCloseName);
+    tagsInput.addEventListener("keydown", (e) => {
+        if (e.key === ",") {
+            e.preventDefault();
+            const tagText = tagsInput.value.trim();
+            if (!tagText) return;
+            createTag(tagText, tagsContainer, tagsInput, tagSpanName, tagCloseName);
+            saveTag(tagsContainer, tagSpanName);
+        }
+        if (e.key === "Backspace") removeTag(tagsContainer, tagsInput, tagSpanName);
+    });
+}
+
+function createCategoryTags() {
     const tagsContainer = document.querySelector(".tags-container");
     const tagsInput = document.getElementById("tags-input");
-
     if (!tagsInput) return;
-    tagsInput.addEventListener("keydown", (e) => {
-        if (e.key !== ",") return;
-        e.preventDefault();
-        const tag = tagsInput.value.trim();
-        if (!tag) return;
+    createTagsListeners(tagsContainer, tagsInput, "tag-span", "tag-close");
 
-        const tagElement = document.createElement("span");
-        tagElement.className = "tag-span";
-        tagElement.innerHTML = `${tag} <span class="tag-close">&times;</span>`;
-        tagsContainer.insertBefore(tagElement, tagsInput);
-
-        tagElement.querySelector(".tag-close").addEventListener("click", () => {
-            tagsContainer.removeChild(tagElement);
-        });
-        tagsInput.value = "";
-    });
 }
 
 function createSpecificUsersTags() {
     const specificUsersTagsContainer = document.querySelector(".specific-users-tags-container");
-    const specificUsersField = document.getElementById("specific-users");
-
+    const specificUsersField = document.getElementById("specific-users-tags-input");
     if (!specificUsersField) return;
-    specificUsersField.addEventListener("keydown", (e) => {
-        if (e.key !== ",") return;
-        e.preventDefault();
-        const user = specificUsersField.value.trim();
-        if (!user) return;
-
-        const userElement = document.createElement("span");
-        userElement.className = "specific-users-tags-span";
-        userElement.innerHTML = `${user} <span class="specific-users-tags-close">&times;</span>`;
-        specificUsersTagsContainer.insertBefore(userElement, specificUsersField);
-
-        userElement.querySelector(".specific-users-tags-close").addEventListener("click", () => {
-            specificUsersTagsContainer.removeChild(userElement);
-        });
-        specificUsersField.value = "";
-    });
+    createTagsListeners(specificUsersTagsContainer, specificUsersField, "specific-users-tags-span", "specific-users-tags-close");
 }
 
+function removeBorderOnInteract(element) {
+    element.addEventListener("focus", () => element.style.border = "");
+    element.addEventListener("input", () => element.style.border = "");
+}
+
+function addErrorBorder(element) {
+    element.style.border = "2px solid red";
+    removeBorderOnInteract(element);
+}
 
 function onFormSubmit() {
     const inputForm = document.getElementById("inputForm");
-    inputForm.addEventListener("submit", (e) => {
-        e.preventDefault();
-        const text = document.getElementById("text").value || "";
-        const title = document.getElementById("title").value || "";
-        const description = document.getElementById("description").value || "";
-        const tags = Array.from(document.querySelectorAll(".tag-span")).map(tag => tag.childNodes[0].textContent.split(" ")[0]);
-        const visibilityMode = document.getElementById("visibility").value;
-        const durationMode = document.getElementById("duration").value;
-        let specificUsersTags = [];
-        let view = null;
-        let date = null;
-        let time = null;
-        let viewValue = null;
-        let dateValue = null;
-        let timeValue = null;
+    inputForm.addEventListener("submit", (e) => handleSubmission(e));
+}
 
-        if (visibilityMode === "specific") specificUsersTags = Array.from(document.querySelectorAll(".specific-users-tags-span")).map(user => user.childNodes[0].textContent.split(" ")[0]);
-        if (durationMode === "views") {
-            view = document.getElementById("view-count");
-            viewValue = view.value;
-            if (!viewValue) {
-                view.style.border = "2px solid red";
-                removeBorderOnInteract(view);
-                return;
-            }
-        } else if (durationMode === "time") {
-            date = document.getElementById("date-duration");
-            time = document.getElementById("time-duration");
-            dateValue = date.value;
-            timeValue = time.value;
-            if (!dateValue && timeValue) {
-                date.style.border = "2px solid red";
-                removeBorderOnInteract(date);
-                return;
-            }
-            if (!timeValue && dateValue) {
-                time.style.border = "2px solid red";
-                removeBorderOnInteract(time);
-                return;
-            }
-            if (!dateValue || !timeValue) {
-                date.style.border = "2px solid red";
-                time.style.border = "2px solid red";
-                removeBorderOnInteract(date);
-                removeBorderOnInteract(time);
-                return;
-            }
-        }
+function handleSubmission(e) {
+    e.preventDefault();
+    const formData = parseFormData();
+    if (!validFormData(formData)) return;
+    submitForm(formData);
+}
 
-        const formData = {
-            text,
-            title,
-            description,
-            tags,
-            visibilityMode,
-            durationMode,
-            specificUsersTags,
-            viewValue,
-            dateValue,
-            timeValue
-        };
-        submitForm(formData);
-    });
+function parseFormData() {
+    const text = document.getElementById("text").value || "";
+    const title = document.getElementById("title").value || "";
+    const description = document.getElementById("description").value || "";
+    const tags = Array.from(document.querySelectorAll(".tag-span")).map(tag => tag.textContent.slice(0, -2));
+    const visibilityMode = document.getElementById("visibility").value;
+    const durationMode = document.getElementById("duration").value;
+    let specificUsersTags = [];
+    let viewValue = null;
+    let dateValue = null;
+    let timeValue = null;
+
+    if (visibilityMode === "specific") specificUsersTags = Array.from(document.querySelectorAll(".specific-users-tags-span")).map(user => user.textContent.slice(0, -2));
+    if (durationMode === "views") viewValue = document.getElementById("view-count").value;
+    else if (durationMode === "time") {
+        dateValue = document.getElementById("date-duration").value;
+        timeValue = document.getElementById("time-duration").value;
+    }
+    return {
+        text,
+        title,
+        description,
+        tags,
+        visibilityMode,
+        durationMode,
+        specificUsersTags,
+        viewValue,
+        dateValue,
+        timeValue
+    };
+}
+
+function validFormData(formData) {
+    if (formData.visibilityMode === "specific" && formData.specificUsersTags.length === 0) {
+        addErrorBorder(document.getElementById("specific-users-tags-input"));
+        return false;
+    }
+    if (formData.durationMode === "views" && !formData.viewValue) {
+        addErrorBorder(document.getElementById("view-count"));
+        return false;
+    }
+    if (formData.durationMode === "time" && !formData.dateValue && !formData.timeValue) {
+        addErrorBorder(document.getElementById("date-duration"));
+        addErrorBorder(document.getElementById("time-duration"));
+        return false;
+    }
+    if (formData.durationMode === "time" && !formData.dateValue) {
+        addErrorBorder(document.getElementById("date-duration"));
+        return false;
+    }
+    if (formData.durationMode === "time" && !formData.timeValue) {
+        addErrorBorder(document.getElementById("time-duration"));
+        return false;
+    }
+    return true;
 }
 
 function submitForm(formData) {
+    console.log(formData);
+    return;
     fetch("/submit", {
         method: "POST",
         headers: {
@@ -299,7 +311,12 @@ document.addEventListener("DOMContentLoaded", () => {
     resizeDivider();
     minimizeSettings();
     toggleSettings();
-    createTags();
-    createSpecificUsersTags();
+    createCategoryTags();
+    // createSpecificUsersTags();
     onFormSubmit();
+
+    document.getElementById("reset-settings").addEventListener("click", () => {
+        localStorage.clear();
+        location.reload();
+    });
 });
