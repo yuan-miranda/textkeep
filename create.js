@@ -157,9 +157,7 @@ function saveTag(tagsContainer, tagSpanName) {
 
 function loadTags(tagsContainer, tagsInput, tagSpanName, tagCloseName) {
     const tags = JSON.parse(localStorage.getItem(`${tagSpanName}`)) || [];
-    tags.forEach(tagText => {
-        createTag(tagText, tagsContainer, tagsInput, tagSpanName, tagCloseName);
-    });
+    tags.forEach(tagText => { createTag(tagText, tagsContainer, tagsInput, tagSpanName, tagCloseName); });
 }
 
 function createTag(tagText, tagsContainer, tagsInput, tagSpanName, tagCloseName) {
@@ -182,13 +180,20 @@ function removeTag(tagsContainer, tagsInput, tagSpanName) {
     saveTag(tagsContainer, tagSpanName);
 }
 
+function validTag(tagText, tagsContainer, tagSpanName) {
+    if (!tagText) return false;
+    if (tagText.match(/[^a-zA-Z0-9 ]/)) return false;
+    if (Array.from(tagsContainer.querySelectorAll(`.${tagSpanName}`)).some(tag => tag.textContent.slice(0, -2) === tagText)) return false;
+    return true;
+}
+
 function createTagsListeners(tagsContainer, tagsInput, tagSpanName, tagCloseName) {
     loadTags(tagsContainer, tagsInput, tagSpanName, tagCloseName);
     tagsInput.addEventListener("keydown", (e) => {
         if (e.key === ",") {
             e.preventDefault();
             const tagText = tagsInput.value.trim();
-            if (!tagText) return;
+            if (!validTag(tagText, tagsContainer, tagSpanName)) return;
             createTag(tagText, tagsContainer, tagsInput, tagSpanName, tagCloseName);
             saveTag(tagsContainer, tagSpanName);
         }
@@ -211,14 +216,14 @@ function createSpecificUsersTags() {
     createTagsListeners(specificUsersTagsContainer, specificUsersField, "specific-users-tags-span", "specific-users-tags-close");
 }
 
-function removeBorderOnInteract(element) {
-    element.addEventListener("focus", () => element.style.border = "");
-    element.addEventListener("input", () => element.style.border = "");
+function removeBorderOnInteract(element, elementInteract=element) {
+    elementInteract.addEventListener("focus", () => element.style.border = "");
+    elementInteract.addEventListener("input", () => element.style.border = "");
 }
 
-function addErrorBorder(element) {
+function addErrorBorder(element, elementInteract=element) {
     element.style.border = "2px solid red";
-    removeBorderOnInteract(element);
+    removeBorderOnInteract(element, elementInteract);
 }
 
 function onFormSubmit() {
@@ -266,10 +271,10 @@ function parseFormData() {
 }
 
 function validFormData(formData) {
-    if (formData.visibilityMode === "specific" && formData.specificUsersTags.length === 0) {
-        addErrorBorder(document.getElementById("specific-users-tags-input"));
-        return false;
-    }
+    // if (formData.visibilityMode === "specific" && formData.specificUsersTags.length === 0) {
+    //     addErrorBorder(document.querySelector(".specific-users-tags-container"), document.getElementById("specific-users-tags-input"));
+    //     return false;
+    // }
     if (formData.durationMode === "views" && !formData.viewValue) {
         addErrorBorder(document.getElementById("view-count"));
         return false;
