@@ -12,12 +12,12 @@ body {
     font-family: Arial, Helvetica, sans-serif;
 }
 
-body .create-container {
+body .modify-container {
     display: flex;
     flex-direction: column;
     height: 100%;
 }
-body .create-container header {
+body .modify-container header {
     display: flex;
     align-items: center;
     padding: 10px;
@@ -25,48 +25,48 @@ body .create-container header {
     background-color: rgba(0, 0, 0, 0.1);
 }
 
-body .create-container header .logo {
+body .modify-container header .logo {
     margin-left: 10px;
 }
 
-body .create-container header .logo h1 a {
+body .modify-container header .logo h1 a {
     text-decoration: none;
     color: black;
 }
-body .create-container header nav {
+body .modify-container header nav {
     display: flex;
     flex-direction: row;    
 }
-body .create-container header nav ul {
+body .modify-container header nav ul {
     display: flex;
     flex-direction: row;
     list-style: none;
 }
-body .create-container header nav ul li {
+body .modify-container header nav ul li {
     margin: 0 20px;
 }
-body .create-container header nav ul li a {
+body .modify-container header nav ul li a {
     text-decoration: none;
     color: black;
     font-size: larger;
     font-weight: bold;
 }
 
-body .create-container header nav ul li a:hover {
+body .modify-container header nav ul li a:hover {
     background-color: rgba(0, 0, 0, 0.1);
 }
 
-body .create-container header .search {
+body .modify-container header .search {
     flex: 1;
     margin: 0 20px;
 }
 
-body .create-container header .search form input {
+body .modify-container header .search form input {
     width: 250px;
     padding: 5px;
 }
 
-body .create-container header .search form button {
+body .modify-container header .search form button {
     padding: 5px;
     background-color: #007bff;
     color: white;
@@ -74,18 +74,18 @@ body .create-container header .search form button {
     cursor: pointer;
 }
 
-body .create-container header .search form button:hover {
+body .modify-container header .search form button:hover {
     background-color: #0056b3;
 }
 
-body .create-container header .profile {
+body .modify-container header .profile {
     margin-left: auto;
     margin-right: 5px;
 }
 
-body .create-container header .profile img {}
+body .modify-container header .profile img {}
 
-body .create-container .index-content {
+body .modify-container .index-content {
     flex: 1;
     display: flex;
     flex-direction: row;
@@ -93,7 +93,7 @@ body .create-container .index-content {
     position: relative;
 }
 
-body .create-container .index-content .divider {
+body .modify-container .index-content .divider {
     margin: 5px 0 5px 0;
     border-radius: 5px;
     width: 5px;
@@ -108,44 +108,44 @@ body .create-container .index-content .divider {
     justify-content: center;
 }
 
-body .create-container .index-content .divider button {
+body .modify-container .index-content .divider button {
     height: 50px;
 }
 
-body .create-container .index-content .divider:hover {
+body .modify-container .index-content .divider:hover {
     background-color: #999;
 }
 
-body .create-container .index-content .input-form {
+body .modify-container .index-content .input-form {
     flex: 2;
     display: flex;
     flex-direction: column;
     min-width: 300px;
 }
 
-body .create-container .index-content .input-form form {
+body .modify-container .index-content .input-form form {
     flex: 1;
     display: flex;
     flex-direction: column;
     padding: 5px;
 }
 
-body .create-container .index-content .input-form form textarea {
+body .modify-container .index-content .input-form form textarea {
     flex: 1;
     resize: none;
     padding: 10px;
 }
 
-body .create-container .index-content .input-form form textarea:focus {}
+body .modify-container .index-content .input-form form textarea:focus {}
 
-body .create-container .index-content .input-form form .save-as {
+body .modify-container .index-content .input-form form .save-as {
     display: flex;
     flex-direction: row;
     justify-content: end;
 }
 
-body .create-container .index-content .input-form form .save-as #submit,
-body .create-container .index-content .input-form form .save-as #draft{
+body .modify-container .index-content .input-form form .save-as #submit,
+body .modify-container .index-content .input-form form .save-as #draft{
     height: 25px;
     margin: 2px 2px 0 0;
     background-color: #007bff;
@@ -157,12 +157,12 @@ body .create-container .index-content .input-form form .save-as #draft{
     font-size: 14px;
 }
 
-body .create-container .index-content .input-form form .save-as #submit:hover,
-body .create-container .index-content .input-form form .save-as #draft:hover {
+body .modify-container .index-content .input-form form .save-as #submit:hover,
+body .modify-container .index-content .input-form form .save-as #draft:hover {
     background-color: #0056b3;
 }
 
-body .create-container .index-content .input-form form .save-as #reset {
+body .modify-container .index-content .input-form form .save-as #reset {
     height: 25px;
     margin: 2px 2px 0 0;
     background-color: #ff8080;
@@ -174,11 +174,11 @@ body .create-container .index-content .input-form form .save-as #reset {
     font-size: 14px;
 }
 
-body .create-container .index-content .input-form form .save-as #reset:hover {
+body .modify-container .index-content .input-form form .save-as #reset:hover {
     background-color: #e60000;
 }
 
-body .create-container .index-content .settings-form {
+body .modify-container .index-content .settings-form {
     flex: 0.5;
     display: flex;
     flex-direction: column;
@@ -186,14 +186,14 @@ body .create-container .index-content .settings-form {
     min-width: 300px;
 }
 
-body .create-container .index-content .settings-form .minimize {
+body .modify-container .index-content .settings-form .minimize {
     display: flex;
     flex-direction: row;
     align-items: center;
     margin-bottom: 5px;
 }
 
-body .create-container .index-content .settings-form .minimize #minimize-button {
+body .modify-container .index-content .settings-form .minimize #minimize-button {
     margin-left: auto;
     height: 25px;
     width: 25px;
@@ -203,31 +203,31 @@ body .create-container .index-content .settings-form .minimize #minimize-button 
     font-size: 20px;
 }
 
-body .create-container .index-content .settings-form form {
+body .modify-container .index-content .settings-form form {
     flex: 1;
     display: flex;
     flex-direction: column;
 }
 
-body .create-container .index-content .settings-form form .form-group {
+body .modify-container .index-content .settings-form form .form-group {
     display: flex;
     align-items: center;
     margin: 4px;
 }
 
-body .create-container .index-content .settings-form form .form-group label {
+body .modify-container .index-content .settings-form form .form-group label {
     flex: 1;
     margin-right: 10px;
 }
 
-body .create-container .index-content .settings-form form .form-group input,
-body .create-container .index-content .settings-form form .form-group .tags-container,
-body .create-container .index-content .settings-form form .form-group select {
+body .modify-container .index-content .settings-form form .form-group input,
+body .modify-container .index-content .settings-form form .form-group .tags-container,
+body .modify-container .index-content .settings-form form .form-group select {
     flex: 2;
     padding: 8px;
 }
 
-body .create-container .index-content .settings-form form .form-group .tags-container {
+body .modify-container .index-content .settings-form form .form-group .tags-container {
     overflow: auto;
     display: flex;
     flex-wrap: wrap;
@@ -236,23 +236,23 @@ body .create-container .index-content .settings-form form .form-group .tags-cont
     transition: border-color 0.2s ease;
 }
 
-body .create-container .index-content .settings-form form .form-group .tags-container:focus-within {
+body .modify-container .index-content .settings-form form .form-group .tags-container:focus-within {
     border-color: #007bff;
     box-shadow: 0 0 0 1px #007bff;
 }
 
-body .create-container .index-content .settings-form form .form-group .tags-container #tags-input {
+body .modify-container .index-content .settings-form form .form-group .tags-container #tags-input {
     border: none;
     outline: none;
     flex: 1;
     padding: 0px;
 }
 
-/* body .create-container .index-content .settings-form form .form-group .tags-container #tags-input:focus::placeholder {
+/* body .modify-container .index-content .settings-form form .form-group .tags-container #tags-input:focus::placeholder {
     color: transparent;
 } */
 
-body .create-container .index-content .settings-form form .form-group .tags-container .tag-span {
+body .modify-container .index-content .settings-form form .form-group .tags-container .tag-span {
     background-color: #007bff;
     color: white;
     padding: 2px;
@@ -262,32 +262,32 @@ body .create-container .index-content .settings-form form .form-group .tags-cont
     margin-right: 2px;
 }
 
-body .create-container .index-content .settings-form form .form-group .tags-container .tag-span .tag-close {
+body .modify-container .index-content .settings-form form .form-group .tags-container .tag-span .tag-close {
     margin-left: 8px;
     cursor: pointer;
 }
 
 
-body .create-container .index-content .settings-form form #visibility-popup {
+body .modify-container .index-content .settings-form form #visibility-popup {
     display: flex;
     flex-direction: column;
     margin-bottom: 10px;
 
 }
 
-body .create-container .index-content .settings-form form #duration-popup {
+body .modify-container .index-content .settings-form form #duration-popup {
     display: flex;
     flex-direction: column;
     margin-bottom: 10px;
 }
 
-body .create-container .index-content .settings-form form #visibility-popup .specific-users-tags-container,
-body .create-container .index-content .settings-form form #duration-popup input {
+body .modify-container .index-content .settings-form form #visibility-popup .specific-users-tags-container,
+body .modify-container .index-content .settings-form form #duration-popup input {
     padding: 10px;
     margin: 2px 0 2px 0;
 }
 
-body .create-container .index-content .settings-form form #visibility-popup .specific-users-tags-container {
+body .modify-container .index-content .settings-form form #visibility-popup .specific-users-tags-container {
     display: flex;
     flex-wrap: wrap;
     border: 1px solid #8F8F9D;
@@ -295,19 +295,19 @@ body .create-container .index-content .settings-form form #visibility-popup .spe
     transition: border-color 0.2s ease;
 }
 
-body .create-container .index-content .settings-form form #visibility-popup .specific-users-tags-container:focus-within {
+body .modify-container .index-content .settings-form form #visibility-popup .specific-users-tags-container:focus-within {
     border-color: #007bff;
     box-shadow: 0 0 0 1px #007bff;
 }
 
-body .create-container .index-content .settings-form form #visibility-popup .specific-users-tags-container #specific-users-tags-input {
+body .modify-container .index-content .settings-form form #visibility-popup .specific-users-tags-container #specific-users-tags-input {
     border: none;
     outline: none;
     flex: 1;
     padding: 0px;
 }
 
-body .create-container .index-content .settings-form form #visibility-popup .specific-users-tags-container .specific-users-tags-span {
+body .modify-container .index-content .settings-form form #visibility-popup .specific-users-tags-container .specific-users-tags-span {
     background-color: #007bff;
     color: white;
     padding: 2px;
@@ -317,7 +317,7 @@ body .create-container .index-content .settings-form form #visibility-popup .spe
     margin-right: 2px;
 }
 
-body .create-container .index-content .settings-form form #visibility-popup .specific-users-tags-container .specific-users-tags-span .specific-users-tags-close {
+body .modify-container .index-content .settings-form form #visibility-popup .specific-users-tags-container .specific-users-tags-span .specific-users-tags-close {
     margin-left: 8px;
     cursor: pointer;
 }
@@ -327,7 +327,7 @@ body .create-container .index-content .settings-form form #visibility-popup .spe
     user-select: none;
 }
 
-body .create-container .index-content .settings-form form #reset-settings {
+body .modify-container .index-content .settings-form form #reset-settings {
     height: 25px;
     margin: 2px 2px 0 0;
     background-color: #ff8080;
@@ -342,6 +342,6 @@ body .create-container .index-content .settings-form form #reset-settings {
     justify-content: center;
 }
 
-body .create-container .index-content .settings-form form #reset-settings:hover {
+body .modify-container .index-content .settings-form form #reset-settings:hover {
     background-color: #e60000;
 }

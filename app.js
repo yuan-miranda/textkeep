@@ -42,6 +42,14 @@ app.get('/', (req, res) => {
     res.sendFile(__dirname + "/static/html/index.html");
 });
 
+app.get("/create", (req, res) => {
+    res.sendFile(__dirname + "/static/html/create.html");
+});
+
+app.get("/modify", (req, res) => {
+    res.sendFile(__dirname + "/static/html/modify.html");
+});
+
 app.post("/submit", async (req, res) => {
     const formData = req.body;
     const textSizeKiB = Buffer.byteLength(formData.text || "", "utf-8") / 1024;
