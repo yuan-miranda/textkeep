@@ -182,7 +182,7 @@ function removeTag(tagsContainer, tagsInput, tagSpanName) {
 
 function validTag(tagText, tagsContainer, tagSpanName) {
     if (!tagText) return false;
-    if (tagText.match(/[^a-zA-Z0-9 ]/)) return false;
+    if (tagText.match(/[^a-zA-Z0-9_ ]/)) return false;
     if (Array.from(tagsContainer.querySelectorAll(`.${tagSpanName}`)).some(tag => tag.textContent.slice(0, -2) === tagText)) return false;
     return true;
 }
@@ -257,8 +257,12 @@ function parseFormData() {
         timeValue = document.getElementById("time-duration").value;
     }
     return {
-        text,
+        // username,
+        // message_id,
+        // date_created,
+        // date_modified,
         title,
+        text,
         description,
         tags,
         visibilityMode,
@@ -297,7 +301,6 @@ function validFormData(formData) {
 
 function submitForm(formData) {
     console.log(formData);
-    return;
     fetch("/submit", {
         method: "POST",
         headers: {
