@@ -1,5 +1,3 @@
-// fetch the data from the server.
-
 const triggerEvent = (element, eventType) => {
     const event = new Event(eventType);
     element.dispatchEvent(event);
@@ -151,16 +149,16 @@ function toggleSettings() {
     });
 }
 
-function saveTag(tagsContainer, tagSpanName) {
-    const tags = [];
-    tagsContainer.querySelectorAll(`.${tagSpanName}`).forEach(tag => tags.push(tag.textContent.slice(0, -2)));
-    localStorage.setItem(`${tagSpanName}`, JSON.stringify(tags));
-}
+// function saveTag(tagsContainer, tagSpanName) {
+//     const tags = [];
+//     tagsContainer.querySelectorAll(`.${tagSpanName}`).forEach(tag => tags.push(tag.textContent.slice(0, -2)));
+//     localStorage.setItem(`${tagSpanName}`, JSON.stringify(tags));
+// }
 
-function loadTags(tagsContainer, tagsInput, tagSpanName, tagCloseName) {
-    const tags = JSON.parse(localStorage.getItem(`${tagSpanName}`)) || [];
-    tags.forEach(tagText => { createTag(tagText, tagsContainer, tagsInput, tagSpanName, tagCloseName); });
-}
+// function loadTags(tagsContainer, tagsInput, tagSpanName, tagCloseName) {
+//     const tags = JSON.parse(localStorage.getItem(`${tagSpanName}`)) || [];
+//     tags.forEach(tagText => { createTag(tagText, tagsContainer, tagsInput, tagSpanName, tagCloseName); });
+// }
 
 function createTag(tagText, tagsContainer, tagsInput, tagSpanName, tagCloseName) {
     const tagElement = document.createElement("span");
@@ -169,7 +167,7 @@ function createTag(tagText, tagsContainer, tagsInput, tagSpanName, tagCloseName)
     tagsContainer.insertBefore(tagElement, tagsInput);
     tagElement.querySelector(`.${tagCloseName}`).addEventListener("click", () => {
         tagsContainer.removeChild(tagElement);
-        saveTag(tagsContainer, tagSpanName);
+        // saveTag(tagsContainer, tagSpanName);
     });
     tagsInput.value = "";
 }
@@ -179,25 +177,25 @@ function removeTag(tagsContainer, tagsInput, tagSpanName) {
     const tagElements = tagsContainer.querySelectorAll(`.${tagSpanName}`);
     if (tagElements.length === 0) return;
     tagsContainer.removeChild(tagElements[tagElements.length - 1]);
-    saveTag(tagsContainer, tagSpanName);
+    // saveTag(tagsContainer, tagSpanName);
 }
 
 function validTag(tagText, tagsContainer, tagSpanName) {
     if (!tagText) return false;
-    if (tagText.match(/[^a-zA-Z0-9 ]/)) return false;
+    if (tagText.match(/[^a-zA-Z0-9_ ]/)) return false;
     if (Array.from(tagsContainer.querySelectorAll(`.${tagSpanName}`)).some(tag => tag.textContent.slice(0, -2) === tagText)) return false;
     return true;
 }
 
 function createTagsListeners(tagsContainer, tagsInput, tagSpanName, tagCloseName) {
-    loadTags(tagsContainer, tagsInput, tagSpanName, tagCloseName);
+    // loadTags(tagsContainer, tagsInput, tagSpanName, tagCloseName);
     tagsInput.addEventListener("keydown", (e) => {
         if (e.key === ",") {
             e.preventDefault();
             const tagText = tagsInput.value.trim();
             if (!validTag(tagText, tagsContainer, tagSpanName)) return;
             createTag(tagText, tagsContainer, tagsInput, tagSpanName, tagCloseName);
-            saveTag(tagsContainer, tagSpanName);
+            // saveTag(tagsContainer, tagSpanName);
         }
         if (e.key === "Backspace") removeTag(tagsContainer, tagsInput, tagSpanName);
     });
@@ -208,7 +206,6 @@ function createCategoryTags() {
     const tagsInput = document.getElementById("tags-input");
     if (!tagsInput) return;
     createTagsListeners(tagsContainer, tagsInput, "tag-span", "tag-close");
-
 }
 
 function createSpecificUsersTags() {
@@ -259,8 +256,12 @@ function parseFormData() {
         timeValue = document.getElementById("time-duration").value;
     }
     return {
-        text,
+        // username,
+        // message_id,
+        // date_created,
+        // date_modified,
         title,
+        text,
         description,
         tags,
         visibilityMode,
@@ -299,7 +300,6 @@ function validFormData(formData) {
 
 function submitForm(formData) {
     console.log(formData);
-    return;
     fetch("/submit", {
         method: "POST",
         headers: {
@@ -323,7 +323,7 @@ document.addEventListener("DOMContentLoaded", () => {
     onFormSubmit();
 
     document.getElementById("reset-settings").addEventListener("click", () => {
-        localStorage.clear();
+        // localStorage.clear();
         location.reload();
     });
 });
