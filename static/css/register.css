@@ -12,12 +12,12 @@ body {
     font-family: Arial, Helvetica, sans-serif;
 }
 
-body .login-container {
+body .register-container {
     display: flex;
     flex-direction: column;
     height: 100%;
 }
-body .login-container header {
+body .register-container header {
     display: flex;
     align-items: center;
     padding: 10px;
@@ -25,48 +25,48 @@ body .login-container header {
     background-color: rgba(0, 0, 0, 0.1);
 }
 
-body .login-container header .logo {
+body .register-container header .logo {
     margin-left: 10px;
 }
 
-body .login-container header .logo h1 a {
+body .register-container header .logo h1 a {
     text-decoration: none;
     color: black;
 }
-body .login-container header nav {
+body .register-container header nav {
     display: flex;
     flex-direction: row;    
 }
-body .login-container header nav ul {
+body .register-container header nav ul {
     display: flex;
     flex-direction: row;
     list-style: none;
 }
-body .login-container header nav ul li {
+body .register-container header nav ul li {
     margin: 0 20px;
 }
-body .login-container header nav ul li a {
+body .register-container header nav ul li a {
     text-decoration: none;
     color: black;
     font-size: larger;
     font-weight: bold;
 }
 
-body .login-container header nav ul li a:hover {
+body .register-container header nav ul li a:hover {
     background-color: rgba(0, 0, 0, 0.1);
 }
 
-body .login-container header .search {
+body .register-container header .search {
     flex: 1;
     margin: 0 20px;
 }
 
-body .login-container header .search form input {
+body .register-container header .search form input {
     width: 250px;
     padding: 5px;
 }
 
-body .login-container header .search form button {
+body .register-container header .search form button {
     padding: 5px;
     background-color: #007bff;
     color: white;
@@ -74,18 +74,18 @@ body .login-container header .search form button {
     cursor: pointer;
 }
 
-body .login-container header .search form button:hover {
+body .register-container header .search form button:hover {
     background-color: #0056b3;
 }
 
-body .login-container header .profile {
+body .register-container header .profile {
     margin-left: auto;
     margin-right: 5px;
 }
 
-body .login-container header .profile img {}
+body .register-container header .profile img {}
 
-body .login-container .login-content {
+body .register-container .register-content {
     flex: 1;
     display: flex;
     flex-direction: row;
