@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>textkeep.ddns.net</title>
-    <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"> -->
     <link rel="stylesheet" href="/css/create.css">
 </head>
 <body>
@@ -17,6 +16,8 @@
                 <ul>
                     <li><a href="">Browse</a></li>
                     <li><a href="">About</a></li>
+                    <li><a href="/login">Login</a></li>
+                    <li><a href="/register">Register</a></li>
                     <li><a href="/create">Create</a>
                     <li><a href="/modify">Modify</a>
                 </ul>
@@ -31,7 +32,7 @@
                 <img src="/profileIcon.png" height="32px">
             </div>
         </header>
-        <div class="index-content">
+        <div class="create-content">
             <div class="input-form">
                 <form action="" id="inputForm" autocomplete="off">
                     <textarea name="text" id="text" placeholder="Enter text here..."></textarea>
@@ -94,7 +95,6 @@
             </div>
         </div>
     </div>
-    <!-- <script src="{{ url_for('static', filename='js/main.js') }}"></script> -->
     <script src="/js/create.js"></script>
 </body>
 </html>
