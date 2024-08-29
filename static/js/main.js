@@ -75,7 +75,7 @@ async function initProfile() {
             console.log(data);
             
         } catch (err) {
-            console.error("Error verifying token: ", err);
+            alert("An error occurred. Please try again later.");
         }
     }
 

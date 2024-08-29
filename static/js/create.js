@@ -322,6 +322,7 @@ function validFormData(formData) {
     return true;
 }
 
+// outdated, base on /login
 function submitForm(formData) {
     console.log(formData);
     fetch("/submit", {

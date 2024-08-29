@@ -41,7 +41,6 @@ async function handleLoginStatus(response) {
             addError(document.querySelector(".password-error"), document.getElementById("password-input"), "Invalid password");
             break;
         default:
-            console.error("Error logging in: ", response.status);
             alert("An error occurred. Please try again later");
             break;
     }
@@ -56,7 +55,7 @@ async function login(email, password) {
         });
         await handleLoginStatus(response);
     } catch (err) {
-        console.error("Error logging in: ", err);
+        alert("An error occurred. Please try again later");
     }
 }
 

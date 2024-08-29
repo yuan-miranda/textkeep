@@ -165,9 +165,11 @@ app.post("/auth/login", async (req, res) => {
 app.post("/auth/register", async (req, res) => {
     const { username, email, password } = req.body;
     try {
-        const queryText = `
-            INSERT INTO users (username, bio, email, password)
-            VALUES ($1, $2, $3, $4) RETURNING id;`;
+        // check if the email already exists
+        const emailCheck = await pool.query("SELECT * FROM users WHERE email = $1", [email]);
+        if (emailCheck.rows.length > 0) return res.status(422).send("Email already exists");
+
+        const queryText = `INSERT INTO users (username, bio, email, password) VALUES ($1, $2, $3, $4) RETURNING id;`;
         const values = [username, "", email, password];
         const result = await pool.query(queryText, values);
         console.log(`User registered successfully with id: ${result.rows[0].id}`);
