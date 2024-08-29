@@ -4,6 +4,15 @@
     box-sizing: border-box;
 }
 
+input:focus, 
+textarea:focus, 
+select:focus, 
+button:focus {
+    outline: none;
+}
+
+
+
 html, body {
     height: 100%;
 }
@@ -12,12 +21,13 @@ body {
     font-family: Arial, Helvetica, sans-serif;
 }
 
-body .login-container {
+body .container {
     display: flex;
     flex-direction: column;
     height: 100%;
 }
-body .login-container header {
+
+body .container header {
     display: flex;
     align-items: center;
     padding: 10px;
@@ -25,48 +35,52 @@ body .login-container header {
     background-color: rgba(0, 0, 0, 0.1);
 }
 
-body .login-container header .logo {
+body .container header .site-logo {
     margin-left: 10px;
 }
 
-body .login-container header .logo h1 a {
+body .container header .site-logo h1 a {
     text-decoration: none;
     color: black;
 }
-body .login-container header nav {
+
+body .container header nav {
     display: flex;
     flex-direction: row;    
 }
-body .login-container header nav ul {
+
+body .container header nav ul {
     display: flex;
     flex-direction: row;
     list-style: none;
 }
-body .login-container header nav ul li {
+
+body .container header nav ul li {
     margin: 0 20px;
 }
-body .login-container header nav ul li a {
+
+body .container header nav ul li a {
     text-decoration: none;
     color: black;
     font-size: larger;
     font-weight: bold;
 }
 
-body .login-container header nav ul li a:hover {
+body .container header nav ul li a:hover {
     background-color: rgba(0, 0, 0, 0.1);
 }
 
-body .login-container header .search {
+body .container header .search-box {
     flex: 1;
     margin: 0 20px;
 }
 
-body .login-container header .search form input {
+body .container header .search-box #search-form #search-input {
     width: 250px;
     padding: 5px;
 }
 
-body .login-container header .search form button {
+body .container header .search-box #search-form #search-button {
     padding: 5px;
     background-color: #007bff;
     color: white;
@@ -74,20 +88,118 @@ body .login-container header .search form button {
     cursor: pointer;
 }
 
-body .login-container header .search form button:hover {
+body .container header .search-box #search-form #search-button:hover {
     background-color: #0056b3;
 }
 
-body .login-container header .profile {
+body .container header .profile-icon {
     margin-left: auto;
     margin-right: 5px;
 }
 
-body .login-container header .profile img {}
+body .container header .profile-icon img {}
 
-body .login-container .login-content {
+body .container .content {
     flex: 1;
     display: flex;
-    flex-direction: row;
-    position: relative;
+    justify-content: center;
+    align-items: center;
+}
+
+body .container .content .login-box {
+    padding: 50px;
+    border-radius: 10px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    font-size: large;
+}
+
+body .container .content .login-box p {
+    padding-top: 5px;
+    font-size: medium;
+}
+
+body .container .content .login-box p a {
+    text-decoration: none;
+    color: #007bff;
+}
+
+body .container .content .login-box .forgot-password {
+    font-size: medium;
+    display: flex;
+    justify-content: end;
+}
+
+body .container .content .login-box .forgot-password a {
+    text-decoration: none;
+    color: #dc3545;
+}
+
+body .container .content .login-box .forgot-password a:hover {
+    color: #a71d2a;
+}
+
+body .container .content .login-box form {
+    padding-top: 30px;
+}
+
+body .container .content .login-box hr {
+    margin: 20px 0 20px 0;
+}
+
+body .container .content .login-box form .email-box,
+body .container .content .login-box form .password-box {
+    margin-top: 5px;
+    display: flex;
+    flex-direction: column;
+    font-size: medium;
+}
+
+body .container .content .login-box form .email-error,
+body .container .content .login-box form .password-error {
+    font-size: small;
+    color: red;
+}
+
+body .container .content .login-box form .password-box .attach-show-button {
+    display: flex;
+    justify-content: space-between;
+}
+
+body .container .content .login-box form .password-box .attach-show-button #password-input {
+    width: 100%;
+}
+
+body .container .content .login-box form .password-box .attach-show-button #show-password {
+    padding: 5px;
+    border: none;
+    cursor: pointer;
+}
+body .container .content .login-box form div input {
+    padding: 4px;
+}
+
+body .container .content .login-box form #login-button {
+    margin-top: 60px;
+    padding: 10px;
+    background-color: #007bff;
+    border-radius: 5px;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: medium;
+    width: 100%;
+}
+
+body .container .content .login-box form #login-button:hover {
+    background-color: #0056b3;
+}
+
+body .container .content .login-box form .signin-as-guest #guest-button {
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    font-size: medium;
+    width: 100%;
 }

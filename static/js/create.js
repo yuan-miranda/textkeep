@@ -238,6 +238,11 @@ function handleSubmission(e) {
 }
 
 function parseFormData() {
+    const author = "test";
+    const date_created = "";
+    const date_updated = "";
+    const date_deleted = "";
+    
     const text = document.getElementById("text").value || "";
     const title = document.getElementById("title").value || "";
     const description = document.getElementById("description").value || "";
@@ -255,11 +260,27 @@ function parseFormData() {
         dateValue = document.getElementById("date-duration").value;
         timeValue = document.getElementById("time-duration").value;
     }
+
+    // CREATE TABLE IF NOT EXISTS notes (
+    //     id SERIAL PRIMARY KEY,
+    //     author TEXT NOT NULL,
+    //     title TEXT,
+    //     text TEXT,
+    //     description TEXT,
+    //     tags TEXT[],
+    //     visibility_mode TEXT,
+    //     duration_mode TEXT,
+    //     specific_users_tags TEXT[],
+    //     view_value INT,
+    //     date_value DATE,
+    //     time_value TIME,
+    //     date_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    //     date_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    //     date_deleted TIMESTAMP
+    // );`;
+
     return {
-        // username,
-        // message_id,
-        // date_created,
-        // date_modified,
+        author,
         title,
         text,
         description,
@@ -269,7 +290,10 @@ function parseFormData() {
         specificUsersTags,
         viewValue,
         dateValue,
-        timeValue
+        timeValue,
+        date_created,
+        date_updated,
+        date_deleted,
     };
 }
 
