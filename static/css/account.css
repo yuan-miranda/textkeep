@@ -88,6 +88,6 @@ body .container header .profile-icon img {}
 body .container .content {
     flex: 1;
     display: flex;
-    flex-direction: row;
-    position: relative;
+    /* flex-direction: row;
+    position: relative; */
 }

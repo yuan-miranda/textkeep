@@ -1,9 +1,29 @@
-const express = require("express");
-const jwt = require("jsonwebtoken");
-const { Pool } = require("pg");
-require("dotenv").config();
+const express = require('express');
+const jwt = require('jsonwebtoken');
+const nodemailer = require('nodemailer');
+const { Pool } = require('pg');
+require('dotenv').config();
 const app = express();
-const port =  3000;
+const port = 3000;
+
+const pool = new Pool({
+    user: process.env.DB_USER,
+    host: process.env.DB_HOST,
+    database: process.env.DB_NAME,
+    password: process.env.DB_PASSWORD,
+    port: 5432,
+});
+
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASSWORD,
+    }
+});
+
+app.use(express.json());
+app.use(express.static('static'));
 
 async function initializeDatabase() {
     // initialize the database with the required tables.
@@ -48,17 +68,31 @@ async function initializeDatabase() {
     }
 }
 
-app.use(express.json());
-app.use(express.static("static"));
+function verifyToken(req, res, next) {
+    // 401, 403, 500
+    // check if the client has a valid token.
+    const authHeader = req.headers["authorization"];
+    const token = authHeader && authHeader.split(" ")[1];
 
-const pool = new Pool({
-    user: process.env.DB_USER,
-    host: process.env.DB_HOST,
-    database: process.env.DB_NAME,
-    password: process.env.DB_PASSWORD,
-    port: 5432
-});
+    // if there is no token, return an error message.
+    if (!token) return res.status(401).send({ error: "No token provided" });
+   
+    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+        if (err) return res.status(403).send({ error: "Invalid token" });
+        // return the user id and email. This can be used to fetch the user data from the database.
+        req.user = user;
+        next();
+    });
+}
 
+async function getUserData(email, username=email) {
+    // query the database to get the user data.
+    // the query could either be by email or username.
+    const result = await pool.query("SELECT * FROM users WHERE email = $1 OR username = $2", [email, username]);
+    return result.rows[0];
+}
+
+// Page routes
 app.get('/', (req, res) => {
     res.sendFile(__dirname + "/static/html/index.html");
 });
@@ -79,68 +113,13 @@ app.get("/modify", (req, res) => {
     res.sendFile(__dirname + "/static/html/modify.html");
 });
 
-app.post("/submit", async (req, res) => {
-    // outdated code, needs to be updated.
-    const formData = req.body;
-    const textSizeKiB = Buffer.byteLength(formData.text || "", "utf-8") / 1024;
-    console.log(`Text size: ${textSizeKiB.toFixed(3)} KiB`);
-
-    const queryText = `
-        INSERT INTO notes (author, title, text, description, tags, visibility_mode, duration_mode, specific_users_tags, view_value, date_value, time_value, date_created, date_updated, date_deleted)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
-        RETURNING id;`;
-    const values = [
-        formData.author,
-        formData.title,
-        formData.text,
-        formData.description,
-        formData.tags,
-        formData.visibilityMode,
-        formData.durationMode,
-        formData.specificUsersTags,
-        formData.viewValue,
-        formData.dateValue,
-        formData.timeValue,
-        formData.dateCreated,
-        formData.dateUpdated,
-        formData.dateDeleted
-    ];
-    try {
-        const result = await pool.query(queryText, values);
-        console.log(`Data inserted successfully with id: ${result.rows[0].id}`);
-        res.json({ id: result.rows[0].id, ...formData });
-    } catch (err) {
-        console.error("Error inserting data: ", err);
-        res.status(500).json({ error: "Database insert failed" });
-    }
-});
-
-function verifyToken(req, res, next) {
-    // check if the client has a valid token.
-    const authHeader = req.headers["authorization"];
-    const token = authHeader && authHeader.split(" ")[1];
-
-    // if there is no token, return an error message.
-    if (!token) return res.status(401).send("Unauthorized: No token provided");
-   
-    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-        if (err) return res.status(403).send("Unauthorized: Invalid token");
-        // return the user id and email. This can be used to fetch the user data from the database.
-        req.user = user;
-        next();
-    });
-}
-
 app.get("/account", (req, res) => {
     res.sendFile(__dirname + "/static/html/account.html");
 });
 
-app.get("/auth/user", verifyToken, (req, res) => {
-    // outdated code, moved to /auth/account API endpoint.
-    res.status(200).json(req.user);
-});
-
+// Auth routes
 app.get("/auth/account", verifyToken, async (req, res) => {
+    // 200, 500 (401, 403)
     // get the user data from the database using the email from the token.
     const { email } = req.user;
     try {
@@ -148,47 +127,43 @@ app.get("/auth/account", verifyToken, async (req, res) => {
         res.status(200).json(result);
     } catch (err) {
         console.error("Error fetching user data: ", err);
-        res.status(500).send("An error occurred. Please try again later.");
+        res.status(500).send({ error: `Error fetching user data: ${err}` });
     }
 });
 
-async function getUserData(email) {
-    // query the database to get the user data.
-    const result = await pool.query("SELECT * FROM users WHERE email = $1", [email]);
-    return result.rows[0];
-}
-
 app.post("/auth/login", async (req, res) => {
+    // 200, 401, 422, 500
     // authenticate the user login and return a token on success.
-    const { email, password } = req.body;
+    const { usernameEmail, password } = req.body;
     try {
-        const result = await getUserData(email);
+        const result = await getUserData(usernameEmail);
+        // check if the username or email exists and the password is correct.
+        if (!result) return res.status(422).send({ error: "Username or email not found" });
+        if (result.password !== password) return res.status(401).send({ error: "Invalid password" });
 
-        // check if the email exists and the password is correct.
-        if (!result) return res.status(422).send("Email not found");
-        if (result.password !== password) return res.status(401).send("Invalid password");
-        
         // generate a token with the user id and email.
         const token = jwt.sign({ id: result.id, email: result.email }, process.env.JWT_SECRET, { expiresIn: "30d" });
 
         // update last login timestamp
-        await pool.query("UPDATE users SET last_login = CURRENT_TIMESTAMP WHERE email = $1", [email]);
-        console.log(`User logged in successfully with email: ${email}`);
+        await pool.query("UPDATE users SET last_login = CURRENT_TIMESTAMP WHERE email = $1", [result.email]);
+        console.log(`User logged in successfully with email: ${result.email}`);
 
         res.status(200).json({ token });
     } catch (err) {
         console.error("Error logging in: ", err);
-        res.status(500).send("An error occurred. Please try again later.");
+        res.status(500).send({ error: `Error logging in: ${err}` });
     }
 });
 
 app.post("/auth/register", async (req, res) => {
+    // 200, 422, 500
     const { username, email, password } = req.body;
     try {
-        // check if the email already exists
-        const emailCheck = await pool.query("SELECT * FROM users WHERE email = $1", [email]);
-        if (emailCheck.rows.length > 0) return res.status(422).send("Email already exists");
-
+        const user = await getUserData(email);
+        if (user) {
+            if (user.username === username) return res.status(422).send({ error: "Username already exists" });
+            if (user.email === email) return res.status(422).send({ error: "Email already exists" });
+        }
         // insert the new user data into the database
         const queryText = `INSERT INTO users (username, bio, email, password) VALUES ($1, $2, $3, $4) RETURNING id;`;
         const values = [username, "", email, password];
@@ -197,33 +172,10 @@ app.post("/auth/register", async (req, res) => {
         res.status(200).send("User registered successfully");
     } catch (err) {
         console.error("Error registering user: ", err);
-        res.status(500).send("An error occurred. Please try again later.");
+        res.status(500).send({ error: `Error registering user: ${err}` });
     }
 });
 
-app.post("/auth/password-reset", async (req, res) => {
-    // Handle password reset logic
-});
-
-app.post("/auth/delete", async (req, res) => {
-    // Handle account deletion logic
-});
-
-app.post("/auth/update", async (req, res) => {
-    // Handle account update logic
-});
-
-app.post("/auth/verify", async (req, res) => {
-    // Handle account verification logic
-});
-
-app.post("/auth/logout", async (req, res) => {
-    // Handle logout logic
-});
-
-app.post("/auth/guest", async (req, res) => {
-    // Handle guest login logic
-});
 
 
 
@@ -233,102 +185,8 @@ app.post("/auth/guest", async (req, res) => {
 
 
 
-
-
-
-
-
-
-// API endpoints (security related category)
-app.get("/auth/settings", verifyToken, (req, res) => {
-    // ...
-});
-// app.get("/auth/user", verifyToken, (req, res) => {
-//     // this one is verified, so it will only need the email,
-//     // the issue will be for the guest accounts
-//     // TODO: add a logic for guest accounts
-//     const { email, password } = req.body;
-//     try {
-//         const result = await pool.query("SELECT * FROM users WHERE email = $1", [email]);
-        
-//     }
-// });
-app.get("/auth/verify", verifyToken, (req, res) => {
-    res.status(200).json(req.user);
-});
-// API endpoints (data related category)
-// API endpoints (account related category)
-app.get("/settings", (req, res) => {
-    // this will query the server to get user configuration data an display it
-    // /auth/settings
-    res.sendFile(__dirname + "/static/html/settings.html");
-});
-app.get("/account", (req, res) => {
-    // after loading the page, it will query the server to get user data and display it
-    // /auth/user
-    res.sendFile(__dirname + "/static/html/account.html");
-});
-app.get("/register", (req, res) => {
-    // after registration, it will redirect to login page 
-    res.sendFile(__dirname + "/static/html/register.html");
-});
-app.get("/login", (req, res) => {
-    // after login, it will redirect to "/" page
-    res.sendFile(__dirname + "/static/html/login.html");
-});
-app.get("/logout", (req, res) => {
-    // there function for this, it will be handled via /auth/logout API endpoint instead
-    // /auth/logout
-});
-
-// API endpoints (admin related category)
-// API endpoints (miscellaneous category)
-app.get("/", (req, res) => {
-    // default route which has the note creation page
-    res.sendFile(__dirname + "/static/html/index.html");
-});
-app.get("/browse", (req, res) => {
-    // brose public notes page
-    res.sendFile(__dirname + "/static/html/browse.html");
-});
-app.get("/search", (req, res) => {
-    // after clicking search button, this page will be displayed with search results
-    res.sendFile(__dirname + "/static/html/search.html");
-});
-app.get("/about", (req, res) => {
-    // about page
-    res.sendFile(__dirname + "/static/html/about.html");
-});
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-app.use((req, res) => {
-    res.status(404).send('Page Not Found');
-});
-
+app.use((req, res) => res.status(404).send('Page Not Found'));
 app.listen(port, () => {
-    console.log(`Server is running at port ${port}`);
+    console.log(`Server running on port ${port}`);
+    initializeDatabase();
 });
-
-initializeDatabase();

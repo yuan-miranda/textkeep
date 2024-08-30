@@ -25,10 +25,17 @@ const addError = (element, elementInteract=element, message) => {
 
 function handleRegister(e) {
     e.preventDefault();
-    const username = document.getElementById("username-input").value;
+    let username = document.getElementById("username-input").value;
     const email = document.getElementById("email-input").value;
     const password = document.getElementById("password-input").value;
     let isValid = true;
+    if (username) {
+        // remove special characters (except for - and _)
+        if (!/^[a-zA-Z0-9-_]*$/.test(username)) {
+            addError(document.querySelector(".username-error"), document.getElementById("username-input"), "Username can only contain letters, numbers, - and _");
+            isValid = false;
+        }
+    }
     if (!email) {
         addError(document.querySelector(".email-error"), document.getElementById("email-input"), "Email is required");
         isValid = false;
@@ -57,20 +64,22 @@ async function register(username, email, password) {
         });
         await handleRegisterStatus(response);
     } catch (err) {
-        alert("An error occurred. Please try again later");
+        alert("An error occurred: " + err);
     }
 }
 
 async function handleRegisterStatus(response) {
+    const data = await response.json();
     switch (response.status) {
         case 200:
             alert("Registration successful!");
             break;
         case 422:
-            addError(document.querySelector(".email-error"), document.getElementById("email-input"), "Email already exists");
+            if (data.error === "Username already exists") addError(document.querySelector(".username-error"), document.getElementById("username-input"), data.error);
+            if (data.error === "Email already exists") addError(document.querySelector(".email-error"), document.getElementById("email-input"), data.error);
             break;
-        default:
-            alert("An error occurred. Please try again later.");
+        case 500:
+            alert("An error occurred: " + data.error);
             break;
     }
 }
@@ -81,8 +90,5 @@ function registerButtonListener() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-    const registerButton = document.getElementById("register-button");
-    registerButton.addEventListener("click", () => {
-        register();
-    });
+    registerButtonListener();
 });

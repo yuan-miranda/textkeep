@@ -7,9 +7,9 @@
     <link rel="stylesheet" href="/css/register.css">
 </head>
 <body>
-    <div class="register-container">
+    <div class="container">
         <header>
-            <div class="logo">
+            <div class="site-logo">
                 <h1><a href="/">Textkeep</a></h1>
             </div>
             <nav>
@@ -22,21 +22,46 @@
                     <li><a href="/modify">Modify</a>
                 </ul>
             </nav>
-            <div class="search">
-                <form action="" autocomplete="off">
-                    <input type="text" placeholder="Search...">
-                    <button type="submit">Search</button>
+            <div class="search-box">
+                <form action="" id="search-form" autocomplete="off">
+                    <input type="text" id="search-input" placeholder="Search">
+                    <button type="submit" id="search-button">Search</button>
                 </form>
             </div>
-            <div class="profile">
-                <img src="/profileIcon.png" height="32px">
+            <div class="profile-icon">
+                <img src="/media/profiles/defaultprofile.png" height="32px" alt="profile" id="profile-image">
             </div>
         </header>
-        <div class="register-content">
-            <input type="text" id="username-input">
-            <input type="text" id="email-input">
-            <input type="password" id="password-input">
-            <button id="register-button">Register</button>
+        <div class="content">
+            <div class="register-box">
+                <h1>Create an Account</h1>
+                <p>Already have an account? <a href="/login">Sign in</a></p>
+                <form action="" id="register-form" autocomplete="off">
+                    <div class="username-box">
+                        <label for="username-input">Username</label>
+                        <input type="text" id="username-input">
+                    </div>
+                    <div class="username-error"></div>
+                    <div class="email-box">
+                        <label for="email-input">Email</label>
+                        <input type="email" id="email-input">
+                    </div>
+                    <div class="email-error"></div>
+                    <div class="password-box">
+                        <label for="password-input">Password</label>
+                        <div class="attach-show-button">
+                            <input type="password" id="password-input">
+                            <button type="button" id="show-password">Show</button>
+                        </div>
+                    </div>
+                    <div class="password-error"></div>
+                    <button type="submit" id="register-button">Register</button>
+                    <hr>
+                    <div class="signin-as-guest">
+                        <button id="guest-button">Sign in as Guest</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
     <script src="/js/register.js"></script>

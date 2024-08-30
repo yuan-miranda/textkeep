@@ -28,34 +28,34 @@ const addError = (element, elementInteract=element, message) => {
 }
 
 async function handleLoginStatus(response) {
+    const data = await response.json();
     switch (response.status) {
         case 200:
-            const data = await response.json();
             localStorage.setItem("token", data.token);
             window.location.href = "/account";
             break;
         case 422:
-            addError(document.querySelector(".email-error"), document.getElementById("email-input"), "Email not found");
+            addError(document.querySelector(".username-email-error"), document.getElementById("username-email-input"), data.error);
             break;
         case 401:
-            addError(document.querySelector(".password-error"), document.getElementById("password-input"), "Invalid password");
+            addError(document.querySelector(".password-error"), document.getElementById("password-input"), data.error);
             break;
-        default:
-            alert("An error occurred. Please try again later");
+        case 500:
+            alert("An error occurred: " + data.error);
             break;
     }
 }
 
-async function login(email, password) {
+async function login(usernameEmail, password) {
     try {
         const response = await fetch("/auth/login", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email, password })
+            body: JSON.stringify({ usernameEmail, password })
         });
         await handleLoginStatus(response);
     } catch (err) {
-        alert("An error occurred. Please try again later");
+        alert("An error occurred: " + err);
     }
 }
 
@@ -66,17 +66,26 @@ async function login(email, password) {
 
 function handleLogin(e) {
     e.preventDefault();
-    const email = document.getElementById("email-input").value;
+    const usernameEmail = document.getElementById("username-email-input").value;
+
+    // const email = document.getElementById("email-input").value;
     const password = document.getElementById("password-input").value;
     let isValid = true;
-    if (!email) {
-        addError(document.querySelector(".email-error"), document.getElementById("email-input"), "Email is required");
+
+    if (!usernameEmail) {
+        addError(document.querySelector(".username-email-error"), document.getElementById("username-email-input"), "Username or email is required");
         isValid = false;
-    }
-    if (email) {
-        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-            addError(document.querySelector(".email-error"), document.getElementById("email-input"), "Email is invalid");
+    } else {
+        // check if the input is an email using "@"
+        if (usernameEmail.includes("@") && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(usernameEmail)) {
+            addError(document.querySelector(".username-email-error"), document.getElementById("username-email-input"), "Email is invalid");
             isValid = false;
+        } else {
+            // remove special characters (except for - and _)
+            if (!/^[a-zA-Z0-9-_]*$/.test(usernameEmail)) {
+                addError(document.querySelector(".username-email-error"), document.getElementById("username-email-input"), "Username can only contain letters, numbers, - and _");
+                isValid = false;
+            }
         }
     }
     if (!password) {
@@ -84,7 +93,7 @@ function handleLogin(e) {
         isValid = false;
     }
     if (!isValid) return;
-    login(email, password);
+    login(usernameEmail, password);
 }
 
 function loginButtonListener() {
