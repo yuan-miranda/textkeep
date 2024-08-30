@@ -6,6 +6,7 @@ const app = express();
 const port =  3000;
 
 async function initializeDatabase() {
+    // initialize the database with the required tables.
     const initNotes = `
         CREATE TABLE IF NOT EXISTS notes (
             id SERIAL PRIMARY KEY,
@@ -79,6 +80,7 @@ app.get("/modify", (req, res) => {
 });
 
 app.post("/submit", async (req, res) => {
+    // outdated code, needs to be updated.
     const formData = req.body;
     const textSizeKiB = Buffer.byteLength(formData.text || "", "utf-8") / 1024;
     console.log(`Text size: ${textSizeKiB.toFixed(3)} KiB`);
@@ -114,11 +116,16 @@ app.post("/submit", async (req, res) => {
 });
 
 function verifyToken(req, res, next) {
+    // check if the client has a valid token.
     const authHeader = req.headers["authorization"];
     const token = authHeader && authHeader.split(" ")[1];
+
+    // if there is no token, return an error message.
     if (!token) return res.status(401).send("Unauthorized: No token provided");
+   
     jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
         if (err) return res.status(403).send("Unauthorized: Invalid token");
+        // return the user id and email. This can be used to fetch the user data from the database.
         req.user = user;
         next();
     });
@@ -129,10 +136,12 @@ app.get("/account", (req, res) => {
 });
 
 app.get("/auth/user", verifyToken, (req, res) => {
+    // outdated code, moved to /auth/account API endpoint.
     res.status(200).json(req.user);
 });
 
 app.get("/auth/account", verifyToken, async (req, res) => {
+    // get the user data from the database using the email from the token.
     const { email } = req.user;
     try {
         const result = await getUserData(email);
@@ -144,17 +153,28 @@ app.get("/auth/account", verifyToken, async (req, res) => {
 });
 
 async function getUserData(email) {
+    // query the database to get the user data.
     const result = await pool.query("SELECT * FROM users WHERE email = $1", [email]);
     return result.rows[0];
 }
 
 app.post("/auth/login", async (req, res) => {
+    // authenticate the user login and return a token on success.
     const { email, password } = req.body;
     try {
         const result = await getUserData(email);
+
+        // check if the email exists and the password is correct.
         if (!result) return res.status(422).send("Email not found");
         if (result.password !== password) return res.status(401).send("Invalid password");
+        
+        // generate a token with the user id and email.
         const token = jwt.sign({ id: result.id, email: result.email }, process.env.JWT_SECRET, { expiresIn: "30d" });
+
+        // update last login timestamp
+        await pool.query("UPDATE users SET last_login = CURRENT_TIMESTAMP WHERE email = $1", [email]);
+        console.log(`User logged in successfully with email: ${email}`);
+
         res.status(200).json({ token });
     } catch (err) {
         console.error("Error logging in: ", err);
@@ -169,6 +189,7 @@ app.post("/auth/register", async (req, res) => {
         const emailCheck = await pool.query("SELECT * FROM users WHERE email = $1", [email]);
         if (emailCheck.rows.length > 0) return res.status(422).send("Email already exists");
 
+        // insert the new user data into the database
         const queryText = `INSERT INTO users (username, bio, email, password) VALUES ($1, $2, $3, $4) RETURNING id;`;
         const values = [username, "", email, password];
         const result = await pool.query(queryText, values);
