@@ -73,10 +73,16 @@ async function handleRegisterStatus(response) {
     switch (response.status) {
         case 200:
             alert("Registration successful!");
+
+            // generate a blank html page waiting for the user to verify their email
+            
+
             break;
         case 422:
             if (data.error === "Username already exists") addError(document.querySelector(".username-error"), document.getElementById("username-input"), data.error);
             if (data.error === "Email already exists") addError(document.querySelector(".email-error"), document.getElementById("email-input"), data.error);
+            if (data.error === "Username already registered") addError(document.querySelector(".username-error"), document.getElementById("username-input"), data.error);
+            if (data.error === "Email already registered") addError(document.querySelector(".email-error"), document.getElementById("email-input"), data.error);
             break;
         case 500:
             alert("An error occurred: " + data.error);
@@ -89,6 +95,21 @@ function registerButtonListener() {
     registerButton.addEventListener("click", (e) => handleRegister(e));
 }
 
+function togglePasswordVisibilityListener() {
+    const passwordInput = document.getElementById("password-input");
+    const toggleButton = document.getElementById("toggle-password-visibility-button");
+    toggleButton.addEventListener("click", () => {
+        if (passwordInput.type === "password") {
+            passwordInput.type = "text";
+            toggleButton.textContent = "Hide";
+        } else {
+            passwordInput.type = "password";
+            toggleButton.textContent = "Show";
+        }
+    });
+}
+
 document.addEventListener("DOMContentLoaded", () => {
     registerButtonListener();
+    togglePasswordVisibilityListener();
 });

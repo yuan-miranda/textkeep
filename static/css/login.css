@@ -11,8 +11,6 @@ button:focus {
     outline: none;
 }
 
-
-
 html, body {
     height: 100%;
 }
@@ -125,6 +123,7 @@ body .container .content .login-box p a {
 }
 
 body .container .content .login-box .forgot-password {
+    padding-top: 10px;
     font-size: medium;
     display: flex;
     justify-content: end;
@@ -147,8 +146,7 @@ body .container .content .login-box hr {
     margin: 20px 0 20px 0;
 }
 
-body .container .content .login-box form .username-box,
-body .container .content .login-box form .email-box,
+body .container .content .login-box form .username-email-box,
 body .container .content .login-box form .password-box {
     margin-top: 5px;
     display: flex;
@@ -156,22 +154,22 @@ body .container .content .login-box form .password-box {
     font-size: medium;
 }
 
-body .container .content .login-box form .email-error,
+body .container .content .login-box form .username-email-error,
 body .container .content .login-box form .password-error {
     font-size: small;
     color: red;
 }
 
-body .container .content .login-box form .password-box .attach-show-button {
+body .container .content .login-box form .password-box .attach-toggle-button {
     display: flex;
     justify-content: space-between;
 }
 
-body .container .content .login-box form .password-box .attach-show-button #password-input {
+body .container .content .login-box form .password-box .attach-toggle-button #password-input {
     width: 100%;
 }
 
-body .container .content .login-box form .password-box .attach-show-button #show-password {
+body .container .content .login-box form .password-box .attach-toggle-button #toggle-password-visibility-button {
     padding: 5px;
     border: none;
     cursor: pointer;

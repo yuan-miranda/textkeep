@@ -11,8 +11,6 @@ button:focus {
     outline: none;
 }
 
-
-
 html, body {
     height: 100%;
 }
@@ -163,16 +161,16 @@ body .container .content .register-box form .password-error {
     color: red;
 }
 
-body .container .content .register-box form .password-box .attach-show-button {
+body .container .content .register-box form .password-box .attach-toggle-button {
     display: flex;
     justify-content: space-between;
 }
 
-body .container .content .register-box form .password-box .attach-show-button #password-input {
+body .container .content .register-box form .password-box .attach-toggle-button #password-input {
     width: 100%;
 }
 
-body .container .content .register-box form .password-box .attach-show-button #show-password {
+body .container .content .register-box form .password-box .attach-toggle-button #toggle-password-visibility-button {
     padding: 5px;
     border: none;
     cursor: pointer;
