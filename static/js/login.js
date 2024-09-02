@@ -31,8 +31,7 @@ async function handleLoginStatus(response) {
     const data = await response.json();
     switch (response.status) {
         case 200:
-            localStorage.setItem("token", data.token);
-            window.location.href = "/account";
+            window.location.href = "/";
             break;
         case 422:
             addError(document.querySelector(".username-email-error"), document.getElementById("username-email-input"), data.error);
@@ -42,6 +41,9 @@ async function handleLoginStatus(response) {
             break;
         case 500:
             alert("An error occurred: " + data.error);
+            break;
+        default:
+            alert("DEFAULT: An error occurred: " + data.error);
             break;
     }
 }
@@ -58,11 +60,6 @@ async function login(usernameEmail, password) {
         alert("An error occurred: " + err);
     }
 }
-
-// async function logout() {
-//     localStorage.removeItem("token");
-//     window.location.href = "/";
-// }
 
 function handleLogin(e) {
     e.preventDefault();

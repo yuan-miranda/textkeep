@@ -15,6 +15,22 @@ exports.getAccount = async (req, res) => {
     }
 };
 
+exports.autoLogin = async (req, res) => {
+    const loginToken = req.cookies.login_token;
+    if (!loginToken) return res.status(401).send({ error: "No login token found" });
+
+    try {
+        const { email } = jwt.verify(loginToken, process.env.JWT_SECRET);
+        const user = await getUserData(email);
+        
+        if (user.rows.length === 0) return res.status(422).send({ error: "User not found" });
+        res.status(200).json({ user: user.rows[0] });
+    } catch (err) {
+        console.error("Error auto-logging in: ", err);
+        res.status(500).send({ error: `Error auto-logging in: ${err}` });
+    }
+}
+
 exports.login = async (req, res) => {
     const { usernameEmail, password } = req.body;
     try {

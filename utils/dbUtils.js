@@ -26,6 +26,7 @@ exports.initializeDatabase = async () => {
             id SERIAL PRIMARY KEY,
             username TEXT NOT NULL UNIQUE,
             bio TEXT,
+            profile_image TEXT,
             email TEXT NOT NULL UNIQUE,
             password TEXT NOT NULL,
             last_login TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
