@@ -58,11 +58,12 @@ exports.initializeDatabase = async () => {
 exports.getUserData = async (email, username=email) => {
     // the query could either be by email or username
     const result = await pool.query("SELECT * FROM users WHERE email = $1 OR username = $2", [email, username]);
-    return result.rows[0];
+    console.log(result);
+    return result;
 }
 
 exports.getTempUserData = async (email, username=email) => {
     // the query could either be by email or username
     const result = await pool.query("SELECT * FROM temp_users WHERE email = $1 OR username = $2", [email, username]);
-    return result.rows[0];
+    return result;
 }

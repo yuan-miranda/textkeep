@@ -2,8 +2,6 @@
 const jwt = require('jsonwebtoken');
 
 exports.verifyToken = (req, res, next) => {
-    if (!req.session.user) return res.redirect("/login");
-
     // check if the client has a valid token
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
@@ -20,6 +18,7 @@ exports.verifyToken = (req, res, next) => {
 };
 
 exports.persistentEmailVerificationReroute = (req, res, next) => {
-    if (req.session) return res.redirect("/account/email/verify");
+    if (req.session && req.session.emailVerificationToken && req.originalUrl !== "/account/email/verify") return res.redirect("/account/email/verify");
+    if (req.path === "/account/email/verify" && !req.session.emailVerificationToken) return res.redirect("/");
     next();
 };

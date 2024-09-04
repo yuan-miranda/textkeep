@@ -3,13 +3,13 @@ const jwt = require("jsonwebtoken");
 const pool = require("../config/db");
 const transporter = require("../config/email");
 
-exports.sendEmailVerification = async (req, res) => {
+exports.sendEmailVerification = async (req) => {
     const { emailVerificationToken, email } = req.session;
-    if (!emailVerificationToken) return res.redirect("/login");
+    if (!emailVerificationToken) throw new Error("No verification token found");
 
     try {
         await transporter.sendMail({
-            from: process.env.EMAIL_USER,
+            from: process.env.EMAIL_ADDRESS,
             to: email,
             subject: "Verify Email Address",
             html: `
@@ -21,10 +21,9 @@ exports.sendEmailVerification = async (req, res) => {
             `
         });
         console.log(`Verification email sent to: ${email}`);
-        res.status(200).send("Verification email sent successfully");
     } catch (err) {
         console.error("Error sending verification email: ", err);
-        res.status(500).send({ error: `Error sending verification email: ${err}` });
+        throw new Error(`Error sending verification email: ${err}`);
     }
 };
 

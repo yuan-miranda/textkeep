@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const pool = require('../config/db');
 const { getUserData, getTempUserData } = require('../utils/dbUtils');
+const { sendEmailVerification } = require('./sessionController');
 
 exports.getAccount = async (req, res) => {
     const { email } = req.user;
@@ -16,7 +17,7 @@ exports.getAccount = async (req, res) => {
 };
 
 exports.autoLogin = async (req, res) => {
-    const loginToken = req.cookies.login_token;
+    const loginToken = req.cookies ? req.cookies.login_token : null;
     if (!loginToken) return res.status(401).send({ error: "No login token found" });
 
     try {
@@ -64,17 +65,19 @@ exports.register = async (req, res) => {
         const user = await getUserData(email);
         const tempUser = await getTempUserData(email);
 
-        if (user.rows.length > 0 || tempUser.rows.length > 0) {
+        if (user.rows.length > 0) {
             if (user.email === email) return res.status(422).send({ error: "Email already exists" });
-            if (tempUser.email === email) return res.status(422).send({ error: "Email already registered" });
             if (user.username === username) return res.status(422).send({ error: "Username already exists" });
+        }
+        if (tempUser.rows.length > 0) {
+            if (tempUser.email === email) return res.status(422).send({ error: "Email already registered" });
             if (tempUser.username === username) return res.status(422).send({ error: "Username already registered" });
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
 
         // insert the new user data into the temporary users table
-        const queryText = `INSERT INTO tempUser (username, email, password) VALUES ($1, $2, $3) RETURNING email;`;
+        const queryText = `INSERT INTO temp_users (username, email, password) VALUES ($1, $2, $3) RETURNING email;`;
         const values = [username, email, hashedPassword];
         const result = await pool.query(queryText, values);
         console.log(`User registered successfully with email: ${result.rows[0].email}`);
@@ -83,6 +86,10 @@ exports.register = async (req, res) => {
         req.session.emailVerificationToken = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: "1d" });
         req.session.email = email;
         console.log(`Registration session started for email: ${email}`);
+
+        // send the verification email
+        await sendEmailVerification(req);
+        console.log(`Verification email sent to: ${email}`);
 
         res.status(200).send("Registration session started");
     } catch (err) {
