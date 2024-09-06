@@ -33,11 +33,12 @@ async function handleLoginStatus(response) {
         case 200:
             window.location.href = "/";
             break;
+        case 401:
+            if (data.error === "User already logged in") window.location.href = "/";
+            else addError(document.querySelector(".password-error"), document.getElementById("password-input"), data.error);
+            break;
         case 422:
             addError(document.querySelector(".username-email-error"), document.getElementById("username-email-input"), data.error);
-            break;
-        case 401:
-            addError(document.querySelector(".password-error"), document.getElementById("password-input"), data.error);
             break;
         case 500:
             alert("An error occurred: " + data.error);

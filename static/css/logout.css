@@ -104,7 +104,7 @@ body .container .content {
     align-items: center;
 }
 
-body .container .content .login-box {
+body .container .content .logout-box {
     padding: 50px;
     border-radius: 10px;
     border: 1px solid rgba(0, 0, 0, 0.1);
@@ -112,76 +112,15 @@ body .container .content .login-box {
     font-size: large;
 }
 
-body .container .content .login-box p {
+body .container .content .logout-box p {
     padding-top: 5px;
     font-size: medium;
 }
 
-body .container .content .login-box p a {
-    text-decoration: none;
-    color: #007bff;
-}
-
-body .container .content .login-box .forgot-password {
-    padding-top: 10px;
-    font-size: medium;
-    display: flex;
-    justify-content: end;
-}
-
-body .container .content .login-box .forgot-password a {
-    text-decoration: none;
-    color: #dc3545;
-}
-
-body .container .content .login-box .forgot-password a:hover {
-    color: #a71d2a;
-}
-
-body .container .content .login-box form {
-    padding-top: 30px;
-}
-
-body .container .content .login-box hr {
-    margin: 20px 0 20px 0;
-}
-
-body .container .content .login-box form .username-email-box,
-body .container .content .login-box form .password-box {
-    margin-top: 5px;
-    display: flex;
-    flex-direction: column;
-    font-size: medium;
-}
-
-body .container .content .login-box form .username-email-error,
-body .container .content .login-box form .password-error {
-    font-size: small;
-    color: red;
-}
-
-body .container .content .login-box form .password-box .attach-toggle-button {
-    display: flex;
-    justify-content: space-between;
-}
-
-body .container .content .login-box form .password-box .attach-toggle-button #password-input {
-    width: 100%;
-}
-
-body .container .content .login-box form .password-box .attach-toggle-button #toggle-password-visibility-button {
-    padding: 5px;
-    border: none;
-    cursor: pointer;
-}
-body .container .content .login-box form div input {
-    padding: 4px;
-}
-
-body .container .content .login-box form #login-button {
-    margin-top: 60px;
+body .container .content .logout-box #logout-button {
+    margin-top: 10px;
     padding: 10px;
-    background-color: #007bff;
+    background-color: #dc3545;
     border-radius: 5px;
     color: white;
     border: none;
@@ -190,15 +129,6 @@ body .container .content .login-box form #login-button {
     width: 100%;
 }
 
-body .container .content .login-box form #login-button:hover {
-    background-color: #0056b3;
-}
-
-body .container .content .login-box form .signin-as-guest #guest-button {
-    padding: 10px;
-    border-radius: 5px;
-    border: none;
-    cursor: pointer;
-    font-size: medium;
-    width: 100%;
+body .container .content .logout-box #logout-button:hover {
+    background-color: #a71d2a;
 }

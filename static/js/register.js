@@ -72,11 +72,10 @@ async function handleRegisterStatus(response) {
     const data = await response.json();
     switch (response.status) {
         case 200:
-            alert("Registration successful!");
-
-            // generate a blank html page waiting for the user to verify their email
-            
-
+            window.location.href = "/account/email/verify";
+            break;
+        case 401:
+            if (data.error === "User already logged in") window.location.href = "/";
             break;
         case 422:
             if (data.error === "Username already exists") addError(document.querySelector(".username-error"), document.getElementById("username-input"), data.error);

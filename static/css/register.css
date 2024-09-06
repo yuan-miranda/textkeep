@@ -25,7 +25,7 @@ body .container {
     height: 100%;
 }
 
-body .container header {
+/* body .container header {
     display: flex;
     align-items: center;
     padding: 10px;
@@ -95,7 +95,7 @@ body .container header .profile-icon {
     margin-right: 5px;
 }
 
-body .container header .profile-icon img {}
+body .container header .profile-icon img {} */
 
 body .container .content {
     flex: 1;

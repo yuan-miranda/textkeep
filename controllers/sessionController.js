@@ -2,6 +2,7 @@
 const jwt = require("jsonwebtoken");
 const pool = require("../config/db");
 const transporter = require("../config/email");
+const { getTempUserData } = require("../utils/dbUtils");
 
 exports.sendEmailVerification = async (req) => {
     const { emailVerificationToken, email } = req.session;
@@ -32,14 +33,15 @@ exports.verifyEmail = async (req, res) => {
     if (!token) return res.redirect("/login");
 
     try {
+        console.log("Verifying email...");
         const { email } = jwt.verify(token, process.env.JWT_SECRET);
         
         // get the user data from the temporary users table
-        const user = await pool.query("SELECT * FROM temp_users WHERE email = $1", [email]);
-        if (user.rows.length === 0) return res.status(422).send({ error: "User not found" });
+        const user = await getTempUserData(email);
+        if (!user) return res.status(422).send({ error: "User not found" });
 
         // insert the user data into the users table
-        const { username, password } = user.rows[0];
+        const { username, password } = user;
         const queryText = `INSERT INTO users (username, bio, email, password) VALUES ($1, $2, $3, $4) RETURNING id;`;
         const values = [username, "", email, password];
         await pool.query(queryText, values);
@@ -52,6 +54,7 @@ exports.verifyEmail = async (req, res) => {
         delete req.session.emailVerificationToken;
         delete req.session.email;
 
+        console.log(`Email verification completed for: ${email}`);
         res.status(200).send("User registered successfully");
     } catch (err) {
         console.error("Error verifying email: ", err);
@@ -67,8 +70,8 @@ exports.deleteEmail = async (req, res) => {
         const { email } = jwt.verify(token, process.env.JWT_SECRET);
 
         // delete the user data from the temporary users table
-        const result = await pool.query("DELETE FROM temp_users WHERE email = $1", [email]);
-        if (result.rowCount === 0) return res.status(422).send({ error: "User not found" });
+        const result = await getTempUserData(email);
+        if (!result) return res.status(422).send({ error: "User not found" });
         console.log(`User deleted successfully with email: ${email}`);
 
         // delete the email verification token

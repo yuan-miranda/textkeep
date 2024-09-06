@@ -30,13 +30,14 @@ async function handleLoginStatus(response) {
 }
 
 function displayUserProfile(url) {
-    const profileIcon = document.querySelector(".profile-icon");
+    const profileIcon = document.getElementById("profile-image");
+    // if (url === null) displayGuestProfile();
+    // else profileIcon.src = url;
     profileIcon.src = url;
-
 }
 
 function displayGuestProfile() {
-    const profileIcon = document.querySelector(".profile-icon");
+    const profileIcon = document.getElementById("profile-image");
     profileIcon.src = "../../media/profiles/defaultprofile.png";
 }
 
