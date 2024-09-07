@@ -1,28 +1,4 @@
-function removeBorderOnInteract(element, elementInteract=element) {
-    elementInteract.addEventListener("focus", () => element.style.border = "");
-    elementInteract.addEventListener("input", () => element.style.border = "");
-}
-
-function removeTextOnInteract(element, elementInteract=element) {
-    // elementInteract.addEventListener("focus", () => element.textContent = "");
-    elementInteract.addEventListener("input", () => element.textContent = "");
-}
-
-function addErrorBorder(element, elementInteract=element) {
-    element.style.border = "2px solid red";
-    removeBorderOnInteract(element, elementInteract);
-}
-
-function addErrorText(element, message, elementInteract=element) {
-    element.textContent = message;
-    removeTextOnInteract(element, elementInteract);
-}
-
-const addError = (element, elementInteract=element, message) => {
-    addErrorBorder(elementInteract);
-    addErrorText(element, message, elementInteract);
-}
-
+// register.js
 function handleRegister(e) {
     e.preventDefault();
     let username = document.getElementById("username-input").value;
@@ -64,7 +40,7 @@ async function register(username, email, password) {
         });
         await handleRegisterStatus(response);
     } catch (err) {
-        alert("An error occurred: " + err);
+        addNotification(`CATCH: ${err}`, "bad");
     }
 }
 
@@ -84,7 +60,10 @@ async function handleRegisterStatus(response) {
             if (data.error === "Email already registered") addError(document.querySelector(".email-error"), document.getElementById("email-input"), data.error);
             break;
         case 500:
-            alert("An error occurred: " + data.error);
+            addNotification(data.error, "bad");
+            break;
+        default:
+            addNotification(`DEFAULT: ${data.error}`, "bad");
             break;
     }
 }

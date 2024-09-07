@@ -11,7 +11,7 @@ async function logout() {
         });
         handleLogoutStatus(response);
     } catch (err) {
-        alert("An error occurred: " + err);
+        addNotification(err, "bad");
     }
 }
 
@@ -22,10 +22,10 @@ function handleLogoutStatus(response) {
             window.location.href = "/login";
             break;
         case 500:
-            alert("An error occurred: " + data.error);
+            addNotification(data.error, "bad");
             break;
         default:
-            alert("DEFAULT: An error occurred: " + data.error);
+            addNotification(`DEFAULT: ${data.error}`, "bad");
             break;
     }
 }

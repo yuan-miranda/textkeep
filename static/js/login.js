@@ -1,32 +1,4 @@
-// missing
-// autologin
-// logout
-
-function removeBorderOnInteract(element, elementInteract=element) {
-    elementInteract.addEventListener("focus", () => element.style.border = "");
-    elementInteract.addEventListener("input", () => element.style.border = "");
-}
-
-function removeTextOnInteract(element, elementInteract=element) {
-    // elementInteract.addEventListener("focus", () => element.textContent = "");
-    elementInteract.addEventListener("input", () => element.textContent = "");
-}
-
-function addErrorBorder(element, elementInteract=element) {
-    element.style.border = "2px solid red";
-    removeBorderOnInteract(element, elementInteract);
-}
-
-function addErrorText(element, message, elementInteract=element) {
-    element.textContent = message;
-    removeTextOnInteract(element, elementInteract);
-}
-
-const addError = (element, elementInteract=element, message) => {
-    addErrorBorder(elementInteract);
-    addErrorText(element, message, elementInteract);
-}
-
+// login.js
 async function handleLoginStatus(response) {
     const data = await response.json();
     switch (response.status) {
@@ -41,10 +13,10 @@ async function handleLoginStatus(response) {
             addError(document.querySelector(".username-email-error"), document.getElementById("username-email-input"), data.error);
             break;
         case 500:
-            alert("An error occurred: " + data.error);
+            addNotification(data.error, "bad");
             break;
         default:
-            alert("DEFAULT: An error occurred: " + data.error);
+            addNotification(`DEFAULT: ${data.error}`, "bad")
             break;
     }
 }
@@ -58,7 +30,7 @@ async function login(usernameEmail, password) {
         });
         await handleLoginStatus(response);
     } catch (err) {
-        alert("An error occurred: " + err);
+        addNotification(`CATCH: ${err}`, "bad");
     }
 }
 

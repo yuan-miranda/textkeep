@@ -4,12 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>textkeep.ddns.net</title>
+    <link rel="stylesheet" href="/css/module_header.css">
     <link rel="stylesheet" href="/css/create.css">
 </head>
 <body>
-    <div class="create-container">
+    <div class="container">
         <header>
-            <div class="logo">
+            <div class="site-logo">
                 <h1><a href="/">Textkeep</a></h1>
             </div>
             <nav>
@@ -22,17 +23,17 @@
                     <li><a href="/modify">Modify</a>
                 </ul>
             </nav>
-            <div class="search">
-                <form action="" autocomplete="off">
-                    <input type="text" placeholder="Search...">
-                    <button type="submit">Search</button>
+            <div class="search-box">
+                <form action="" id="search-form" autocomplete="off">
+                    <input type="text" id="search-input" placeholder="Search">
+                    <button type="submit" id="search-button">Search</button>
                 </form>
             </div>
-            <div class="profile">
+            <div class="profile-icon">
                 <img height="32px" alt="profile" id="profile-image">
             </div>
         </header>
-        <div class="create-content">
+        <div class="content">
             <div class="input-form">
                 <form action="" id="inputForm" autocomplete="off">
                     <textarea name="text" id="text" placeholder="Enter text here..."></textarea>
@@ -43,11 +44,9 @@
                     </div>
                 </form>
             </div>
-
             <div class="divider">
                 <button id="toggle-settings"><</button>
             </div>
-
             <div class="settings-form">
                 <div class="minimize">
                     <h3>Settings</h3>
@@ -78,7 +77,6 @@
                         </select>
                     </div>
                     <div id="visibility-popup">
-                        
                     </div>
                     <div class="form-group">
                         <label for="duration">Duration:</label>
@@ -89,12 +87,14 @@
                         </select>
                     </div>
                     <div id="duration-popup"></div>
-
                     <button type="reset" id="reset-settings">Reset</button>
                 </form>
+            </div>
+            <div class="notification-container">
             </div>
         </div>
     </div>
     <script src="/js/create.js"></script>
+    <script src="/js/module_notification.js"></script>
 </body>
 </html>

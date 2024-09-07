@@ -1,99 +1,11 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-html, body {
-    height: 100%;
-}
-
-body {
-    font-family: Arial, Helvetica, sans-serif;
-}
-
-body .modify-container {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-}
-body .modify-container header {
-    display: flex;
-    align-items: center;
-    padding: 10px;
-    width: 100%;
-    background-color: rgba(0, 0, 0, 0.1);
-}
-
-body .modify-container header .logo {
-    margin-left: 10px;
-}
-
-body .modify-container header .logo h1 a {
-    text-decoration: none;
-    color: black;
-}
-body .modify-container header nav {
-    display: flex;
-    flex-direction: row;    
-}
-body .modify-container header nav ul {
-    display: flex;
-    flex-direction: row;
-    list-style: none;
-}
-body .modify-container header nav ul li {
-    margin: 0 20px;
-}
-body .modify-container header nav ul li a {
-    text-decoration: none;
-    color: black;
-    font-size: larger;
-    font-weight: bold;
-}
-
-body .modify-container header nav ul li a:hover {
-    background-color: rgba(0, 0, 0, 0.1);
-}
-
-body .modify-container header .search {
-    flex: 1;
-    margin: 0 20px;
-}
-
-body .modify-container header .search form input {
-    width: 250px;
-    padding: 5px;
-}
-
-body .modify-container header .search form button {
-    padding: 5px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    cursor: pointer;
-}
-
-body .modify-container header .search form button:hover {
-    background-color: #0056b3;
-}
-
-body .modify-container header .profile {
-    margin-left: auto;
-    margin-right: 5px;
-}
-
-body .modify-container header .profile img {}
-
-body .modify-container .modify-content {
+body .container .content {
     flex: 1;
     display: flex;
     flex-direction: row;
-    
     position: relative;
 }
 
-body .modify-container .modify-content .divider {
+body .container .content .divider {
     margin: 5px 0 5px 0;
     border-radius: 5px;
     width: 5px;
@@ -108,44 +20,44 @@ body .modify-container .modify-content .divider {
     justify-content: center;
 }
 
-body .modify-container .modify-content .divider button {
+body .container .content .divider button {
     height: 50px;
 }
 
-body .modify-container .modify-content .divider:hover {
+body .container .content .divider:hover {
     background-color: #999;
 }
 
-body .modify-container .modify-content .input-form {
+body .container .content .input-form {
     flex: 2;
     display: flex;
     flex-direction: column;
     min-width: 300px;
 }
 
-body .modify-container .modify-content .input-form form {
+body .container .content .input-form form {
     flex: 1;
     display: flex;
     flex-direction: column;
     padding: 5px;
 }
 
-body .modify-container .modify-content .input-form form textarea {
+body .container .content .input-form form textarea {
     flex: 1;
     resize: none;
     padding: 10px;
 }
 
-body .modify-container .modify-content .input-form form textarea:focus {}
+body .container .content .input-form form textarea:focus {}
 
-body .modify-container .modify-content .input-form form .save-as {
+body .container .content .input-form form .save-as {
     display: flex;
     flex-direction: row;
     justify-content: end;
 }
 
-body .modify-container .modify-content .input-form form .save-as #submit,
-body .modify-container .modify-content .input-form form .save-as #draft{
+body .container .content .input-form form .save-as #submit,
+body .container .content .input-form form .save-as #draft{
     height: 25px;
     margin: 2px 2px 0 0;
     background-color: #007bff;
@@ -157,12 +69,12 @@ body .modify-container .modify-content .input-form form .save-as #draft{
     font-size: 14px;
 }
 
-body .modify-container .modify-content .input-form form .save-as #submit:hover,
-body .modify-container .modify-content .input-form form .save-as #draft:hover {
+body .container .content .input-form form .save-as #submit:hover,
+body .container .content .input-form form .save-as #draft:hover {
     background-color: #0056b3;
 }
 
-body .modify-container .modify-content .input-form form .save-as #reset {
+body .container .content .input-form form .save-as #reset {
     height: 25px;
     margin: 2px 2px 0 0;
     background-color: #ff8080;
@@ -174,11 +86,11 @@ body .modify-container .modify-content .input-form form .save-as #reset {
     font-size: 14px;
 }
 
-body .modify-container .modify-content .input-form form .save-as #reset:hover {
+body .container .content .input-form form .save-as #reset:hover {
     background-color: #e60000;
 }
 
-body .modify-container .modify-content .settings-form {
+body .container .content .settings-form {
     flex: 0.5;
     display: flex;
     flex-direction: column;
@@ -186,14 +98,14 @@ body .modify-container .modify-content .settings-form {
     min-width: 300px;
 }
 
-body .modify-container .modify-content .settings-form .minimize {
+body .container .content .settings-form .minimize {
     display: flex;
     flex-direction: row;
     align-items: center;
     margin-bottom: 5px;
 }
 
-body .modify-container .modify-content .settings-form .minimize #minimize-button {
+body .container .content .settings-form .minimize #minimize-button {
     margin-left: auto;
     height: 25px;
     width: 25px;
@@ -203,31 +115,31 @@ body .modify-container .modify-content .settings-form .minimize #minimize-button
     font-size: 20px;
 }
 
-body .modify-container .modify-content .settings-form form {
+body .container .content .settings-form form {
     flex: 1;
     display: flex;
     flex-direction: column;
 }
 
-body .modify-container .modify-content .settings-form form .form-group {
+body .container .content .settings-form form .form-group {
     display: flex;
     align-items: center;
     margin: 4px;
 }
 
-body .modify-container .modify-content .settings-form form .form-group label {
+body .container .content .settings-form form .form-group label {
     flex: 1;
     margin-right: 10px;
 }
 
-body .modify-container .modify-content .settings-form form .form-group input,
-body .modify-container .modify-content .settings-form form .form-group .tags-container,
-body .modify-container .modify-content .settings-form form .form-group select {
+body .container .content .settings-form form .form-group input,
+body .container .content .settings-form form .form-group .tags-container,
+body .container .content .settings-form form .form-group select {
     flex: 2;
     padding: 8px;
 }
 
-body .modify-container .modify-content .settings-form form .form-group .tags-container {
+body .container .content .settings-form form .form-group .tags-container {
     overflow: auto;
     display: flex;
     flex-wrap: wrap;
@@ -236,23 +148,23 @@ body .modify-container .modify-content .settings-form form .form-group .tags-con
     transition: border-color 0.2s ease;
 }
 
-body .modify-container .modify-content .settings-form form .form-group .tags-container:focus-within {
+body .container .content .settings-form form .form-group .tags-container:focus-within {
     border-color: #007bff;
     box-shadow: 0 0 0 1px #007bff;
 }
 
-body .modify-container .modify-content .settings-form form .form-group .tags-container #tags-input {
+body .container .content .settings-form form .form-group .tags-container #tags-input {
     border: none;
     outline: none;
     flex: 1;
     padding: 0px;
 }
 
-/* body .modify-container .modify-content .settings-form form .form-group .tags-container #tags-input:focus::placeholder {
+/* body .container .content .settings-form form .form-group .tags-container #tags-input:focus::placeholder {
     color: transparent;
 } */
 
-body .modify-container .modify-content .settings-form form .form-group .tags-container .tag-span {
+body .container .content .settings-form form .form-group .tags-container .tag-span {
     background-color: #007bff;
     color: white;
     padding: 2px;
@@ -262,32 +174,32 @@ body .modify-container .modify-content .settings-form form .form-group .tags-con
     margin-right: 2px;
 }
 
-body .modify-container .modify-content .settings-form form .form-group .tags-container .tag-span .tag-close {
+body .container .content .settings-form form .form-group .tags-container .tag-span .tag-close {
     margin-left: 8px;
     cursor: pointer;
 }
 
 
-body .modify-container .modify-content .settings-form form #visibility-popup {
+body .container .content .settings-form form #visibility-popup {
     display: flex;
     flex-direction: column;
     margin-bottom: 10px;
 
 }
 
-body .modify-container .modify-content .settings-form form #duration-popup {
+body .container .content .settings-form form #duration-popup {
     display: flex;
     flex-direction: column;
     margin-bottom: 10px;
 }
 
-body .modify-container .modify-content .settings-form form #visibility-popup .specific-users-tags-container,
-body .modify-container .modify-content .settings-form form #duration-popup input {
+body .container .content .settings-form form #visibility-popup .specific-users-tags-container,
+body .container .content .settings-form form #duration-popup input {
     padding: 10px;
     margin: 2px 0 2px 0;
 }
 
-body .modify-container .modify-content .settings-form form #visibility-popup .specific-users-tags-container {
+body .container .content .settings-form form #visibility-popup .specific-users-tags-container {
     display: flex;
     flex-wrap: wrap;
     border: 1px solid #8F8F9D;
@@ -295,19 +207,19 @@ body .modify-container .modify-content .settings-form form #visibility-popup .sp
     transition: border-color 0.2s ease;
 }
 
-body .modify-container .modify-content .settings-form form #visibility-popup .specific-users-tags-container:focus-within {
+body .container .content .settings-form form #visibility-popup .specific-users-tags-container:focus-within {
     border-color: #007bff;
     box-shadow: 0 0 0 1px #007bff;
 }
 
-body .modify-container .modify-content .settings-form form #visibility-popup .specific-users-tags-container #specific-users-tags-input {
+body .container .content .settings-form form #visibility-popup .specific-users-tags-container #specific-users-tags-input {
     border: none;
     outline: none;
     flex: 1;
     padding: 0px;
 }
 
-body .modify-container .modify-content .settings-form form #visibility-popup .specific-users-tags-container .specific-users-tags-span {
+body .container .content .settings-form form #visibility-popup .specific-users-tags-container .specific-users-tags-span {
     background-color: #007bff;
     color: white;
     padding: 2px;
@@ -317,7 +229,7 @@ body .modify-container .modify-content .settings-form form #visibility-popup .sp
     margin-right: 2px;
 }
 
-body .modify-container .modify-content .settings-form form #visibility-popup .specific-users-tags-container .specific-users-tags-span .specific-users-tags-close {
+body .container .content .settings-form form #visibility-popup .specific-users-tags-container .specific-users-tags-span .specific-users-tags-close {
     margin-left: 8px;
     cursor: pointer;
 }
@@ -327,7 +239,7 @@ body .modify-container .modify-content .settings-form form #visibility-popup .sp
     user-select: none;
 }
 
-body .modify-container .modify-content .settings-form form #reset-settings {
+body .container .content .settings-form form #reset-settings {
     height: 25px;
     margin: 2px 2px 0 0;
     background-color: #ff8080;
@@ -342,6 +254,6 @@ body .modify-container .modify-content .settings-form form #reset-settings {
     justify-content: center;
 }
 
-body .modify-container .modify-content .settings-form form #reset-settings:hover {
+body .container .content .settings-form form #reset-settings:hover {
     background-color: #e60000;
 }
