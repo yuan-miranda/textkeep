@@ -43,6 +43,14 @@ exports.initializeDatabase = async () => {
             password TEXT NOT NULL,
             date_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );`;
+
+    const initSessions = `
+        CREATE TABLE IF NOT EXISTS sessions (
+            sid TEXT PRIMARY KEY NOT NULL,
+            sess JSON NOT NULL,
+            expire TIMESTAMP NOT NULL
+        );`;
+
     try {
         await pool.query(initNotes);
         console.log("Table 'notes' created successfully");
@@ -50,6 +58,8 @@ exports.initializeDatabase = async () => {
         console.log("Table 'users' created successfully");
         await pool.query(initTempUsers);
         console.log("Table 'temp_users' created successfully");
+        await pool.query(initSessions);
+        console.log("Table 'sessions' created successfully");
     } catch (err) {
         console.error("Error creating table: ", err);
     }

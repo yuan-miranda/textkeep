@@ -38,7 +38,7 @@ exports.verifyEmail = async (req, res) => {
         
         // get the user data from the temporary users table
         const user = await getTempUserData(email);
-        if (!user) return res.status(422).json({ error: "User not found" });
+        if (!user) return res.status(422).send({ error: "User not found" });
 
         // insert the user data into the users table
         const { username, password } = user;
@@ -55,10 +55,10 @@ exports.verifyEmail = async (req, res) => {
         delete req.session.email;
 
         console.log(`Email verification completed for: ${email}`);
-        res.status(200).json({ message: "User registered successfully" });
+        res.status(200).send({ message: "User registered successfully" });
     } catch (err) {
         console.error("Error verifying email: ", err);
-        res.status(500).json({ error: `Error verifying email: ${err}` });
+        res.status(500).send({ error: `Error verifying email: ${err}` });
     }
 };
 
@@ -71,16 +71,17 @@ exports.deleteEmail = async (req, res) => {
 
         // delete the user data from the temporary users table
         const result = await getTempUserData(email);
-        if (!result) return res.status(422).json({ error: "User not found" });
+        if (!result) return res.status(422).send({ error: "User not found" });
+        await pool.query("DELETE FROM temp_users WHERE email = $1", [email]);
         console.log(`User deleted successfully with email: ${email}`);
 
         // delete the email verification token
         delete req.session.emailVerificationToken;
         delete req.session.email;
 
-        res.status(200).json({ message: "User deleted successfully" });
+        res.status(200).send({ message: "User deleted successfully" });
     } catch (err) {
         console.error("Error deleting email: ", err);
-        res.status(500).json({ error: `Error deleting email: ${err}` });
+        res.status(500).send({ error: `Error deleting email: ${err}` });
     }
 };

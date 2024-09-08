@@ -51,7 +51,7 @@ async function handleRegisterStatus(response) {
             window.location.href = "/account/email/verify";
             break;
         case 401:
-            if (data.error === "User already logged in") window.location.href = "/";
+            window.location.href = "/";
             break;
         case 422:
             if (data.error === "Username already exists") addError(document.querySelector(".username-error"), document.getElementById("username-input"), data.error);

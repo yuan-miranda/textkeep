@@ -1,5 +1,5 @@
+// app.js
 const express = require("express");
-const session = require("express-session");
 const cookieParser = require("cookie-parser");
 require("dotenv").config();
 const sessionMiddleware = require("./middlewares/sessionMiddleware");
@@ -14,15 +14,17 @@ const port = 3000;
 
 app.use(express.json());
 app.use(cookieParser());
-app.use(express.static("static"));
-app.use(session(sessionMiddleware));
+app.use(express.static("static/html"));
+app.use(sessionMiddleware);
 
 app.use(persistentEmailVerificationReroute);
 app.use("/", pageRoutes);
 app.use("/auth", authRoutes);
 app.use("/session", sessionRoutes);
 
+// Handle 404
 app.use((req, res) => res.status(404).send("Page Not Found"));
+
 app.listen(port, async () => {
     console.log(`Server running on port ${port}`);
     await initializeDatabase();

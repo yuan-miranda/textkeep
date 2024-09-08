@@ -47,9 +47,11 @@ function handleLogin(e) {
         isValid = false;
     } else {
         // check if the input is an email using "@"
-        if (usernameEmail.includes("@") && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(usernameEmail)) {
-            addError(document.querySelector(".username-email-error"), document.getElementById("username-email-input"), "Email is invalid");
-            isValid = false;
+        if (usernameEmail.includes("@")) {
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(usernameEmail)) {
+                addError(document.querySelector(".username-email-error"), document.getElementById("username-email-input"), "Email is invalid");
+                isValid = false;
+            }
         } else {
             // remove special characters (except for - and _)
             if (!/^[a-zA-Z0-9-_]*$/.test(usernameEmail)) {

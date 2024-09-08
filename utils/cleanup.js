@@ -7,14 +7,14 @@ exports.cleanup = async () => {
         await pool.query("DELETE FROM temp_users WHERE date_created < NOW() - INTERVAL '1 day'");
         console.log("Temporary users cleaned up successfully");
     } catch (err) {
-        console.error("Error cleaning up temporary users: ", err);
+        console.error(`Error cleaning up temporary users: ${err}`);
     }
 
-    // delete the session data from the session store
+    // delete the session data from the sessions table
     try {
-        await pool.query("DELETE FROM session WHERE expires < NOW()");
-        console.log("Sessions cleaned up successfully");
+        await pool.query("DELETE FROM sessions WHERE expire < NOW()");
+        console.log("Expired sessions cleaned up successfully");
     } catch (err) {
-        console.error("Error cleaning up sessions: ", err);
+        console.error(`Error cleaning up expired sessions: ${err}`);
     }
 };

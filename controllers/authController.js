@@ -1,3 +1,5 @@
+// TOFIX: notification are not shared between pages. Add persistent notification section too.
+
 // controllers/authController.js
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
@@ -23,6 +25,7 @@ exports.autoLogin = async (req, res) => {
 
 exports.login = async (req, res) => {
     if (req.cookies.login_token) return res.status(401).json({ error: "User already logged in" });
+    
     const { usernameEmail, password } = req.body;
     try {
         const user = await getUserData(usernameEmail);
