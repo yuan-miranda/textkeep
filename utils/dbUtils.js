@@ -1,4 +1,5 @@
 // utils/dbUtils.js
+const fs = require('fs');
 const pool = require('../config/db');
 
 exports.initializeDatabase = async () => {
@@ -26,9 +27,9 @@ exports.initializeDatabase = async () => {
             id SERIAL PRIMARY KEY,
             username TEXT NOT NULL UNIQUE,
             bio TEXT,
-            profile_image BLOB DEFAULT '../../media/profiles/defaultprofile.png',
             email TEXT NOT NULL UNIQUE,
             password TEXT NOT NULL,
+            profile_image TEXT DEFAULT '../media/profiles/defaultprofile.png',
             last_login TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             account_date_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             account_date_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -63,16 +64,14 @@ exports.initializeDatabase = async () => {
     } catch (err) {
         console.error("Error creating table: ", err);
     }
-}
+};
 
 exports.getUserData = async (email, username=email) => {
     // the query could either be by email or username
     const result = await pool.query("SELECT * FROM users WHERE email = $1 OR username = $2", [email, username]);
     return result.rows[0];
-}
-
+};
 exports.getTempUserData = async (email, username=email) => {
-    // the query could either be by email or username
     const result = await pool.query("SELECT * FROM temp_users WHERE email = $1 OR username = $2", [email, username]);
     return result.rows[0];
-}
+};

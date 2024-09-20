@@ -1,5 +1,5 @@
 // module_notification.js
-function addNotification(message, type) {
+export function addNotification(message, type) {
     const notificatioContainer = document.querySelector(".notification-container");
     const notification = document.createElement("div");
     notification.classList.add("notification", `notification-${type}`);
@@ -18,11 +18,11 @@ function addNotification(message, type) {
     notificationTimeout(notification);
 }
 
-function removeNotification(notification) {
+export function removeNotification(notification) {
     notification.remove();
 }
 
-function notificationTimeout(notification) {
+export function notificationTimeout(notification) {
     // remove notification after 10 seconds
     setTimeout(() => removeNotification(notification), 10000);
 }

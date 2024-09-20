@@ -14,7 +14,7 @@ const port = 3000;
 
 app.use(express.json());
 app.use(cookieParser());
-app.use(express.static("static/html"));
+app.use(express.static("static"));
 app.use(sessionMiddleware);
 
 app.use(persistentEmailVerificationReroute);

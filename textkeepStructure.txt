@@ -1,0 +1,86 @@
+USER ACC - User account.
+	GUEST - Just a guest user. (read only, temporary texts)
+		last_login
+		storage
+	REGISTERED - User who created an account.
+		unique_id
+		username
+		email
+		password
+		account_date_created
+		last_login
+		bio
+		storage
+
+TEXT - Text created
+	HEADER - Details of the text.
+		username
+		message_id
+		date_created
+		date_modified
+		VISIBILITY - How the text is visible on the site
+			public
+			unlisted
+			private
+			specified
+		DURATIONS - How long before the text be deleted.
+			views
+			TIMES - Predefined, you just need to input values.
+				seconds
+				minutes
+				hours
+				days
+				weeks
+				months
+				years
+				indefinitely
+			custom
+	title
+	description
+	content
+	FOOTER - Other details
+		tags
+		views (unique views)
+
+	VISIBLE DETAILS ON CREATE
+		title
+		description
+		tags
+		visibility
+		duration
+	CUSTOMIZABLE INPUTS ON CREATE
+		title
+		description
+		tags
+		visibility
+		duration
+
+	VISIBLE DETAILS ON MODIFY
+		title
+		description
+		tags
+		visibility [locked]
+		duration [locked]
+		message_id
+		date_created
+		date_modified
+		delete [button]
+	CUSTOMIZABLE DETAILS ON MODIFY
+		title
+		description
+		tags
+
+TECHNICAL
+	- Server has 8GiB of storage. (EC2)
+	- Each accounts have a 128KiB storage for their text.
+		that means 65,536 users could create an account.
+		with each having that space. (Guests included)
+	- Guests accounts will be deleted after 7 days of inactivity. (absolute)
+		But they can create an texts with any durations.
+		The Guest account is saved on localstorage, they need to open the
+		site periodically.
+	- We will not use any login via facebook or somesort, only email and password.
+	- No annoying emails.
+	- Obviously i dont know if this could run on EC2 but one thing for sure, it can
+		run Doom.
+	- Easter eggs!

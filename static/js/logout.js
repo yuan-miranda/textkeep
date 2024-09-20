@@ -1,3 +1,5 @@
+// logout.js
+import { addNotification } from "./module_notification.js";
 
 function handleLogout() {
     logout();

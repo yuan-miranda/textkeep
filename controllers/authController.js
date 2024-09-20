@@ -7,19 +7,20 @@ const pool = require('../config/db');
 const { getUserData, getTempUserData } = require('../utils/dbUtils');
 const { sendEmailVerification } = require('./sessionController');
 
-exports.autoLogin = async (req, res) => {
+// essentially the same as the autoLogin function (literally)
+exports.account = async (req, res) => {
     const loginToken = req.cookies ? req.cookies.login_token : null;
     if (!loginToken) return res.status(401).json({ error: "No login token found" });
 
     try {
         const { email } = jwt.verify(loginToken, process.env.JWT_SECRET);
         const user = await getUserData(email);
-        
+
         if (!user) return res.status(422).json({ error: "User not found" });
-        res.status(200).json({ message: "User auto-logged in successfully", data: user });
+        res.status(200).json({ message: "User data retrieved successfully", data: { user } });
     } catch (err) {
-        console.error("Error auto-logging in: ", err);
-        res.status(500).json({ error: `Error auto-logging in: ${err}` });
+        console.error("Error retrieving user data: ", err);
+        res.status(500).json({ error: `Error retrieving user data: ${err}` });
     }
 }
 
@@ -85,7 +86,7 @@ exports.register = async (req, res) => {
         // send the verification email
         await sendEmailVerification(req);
 
-        res.status(200).json({ message: "Registration session started" });
+        res.status(200).json({ message: "Registration session started", data: { email } });
     } catch (err) {
         console.error("Error registering user: ", err);
         res.status(500).json({ error: `Error registering user: ${err}` });

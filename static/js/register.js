@@ -1,4 +1,7 @@
 // register.js
+import { addError } from "./module_addError.js";
+import { addNotification } from "./module_notification.js";
+
 function handleRegister(e) {
     e.preventDefault();
     let username = document.getElementById("username-input").value;
@@ -48,7 +51,7 @@ async function handleRegisterStatus(response) {
     const data = await response.json();
     switch (response.status) {
         case 200:
-            window.location.href = "/account/email/verify";
+            window.location.href = `/account/email/verify?email=${encodeURIComponent(data.data.email)}`;
             break;
         case 401:
             window.location.href = "/";

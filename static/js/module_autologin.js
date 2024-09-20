@@ -1,5 +1,7 @@
 // module_autologin.js
-async function autoLogin() {
+import { addNotification } from "./module_notification.js";
+
+export async function autoLogin() {
     try {
         const response = await fetch("/auth/auto-login", {
             method: "GET",
@@ -11,10 +13,11 @@ async function autoLogin() {
     }
 }
 
-async function handleLoginStatus(response) {
+export async function handleLoginStatus(response) {
     const data = await response.json();
     switch (response.status) {
         case 200:
+            console.log(data.data.user.username + " is logged in");
             const name = document.getElementById("name");
             name.textContent = data.data.user.username;
             displayUserProfile(data.data.user.profile_image);
@@ -31,7 +34,7 @@ async function handleLoginStatus(response) {
     }
 }
 
-function displayUserProfile(image="../../media/profiles/defaultprofile.png") {
+export function displayUserProfile(image="../media/profiles/defaultprofile.png") {
     const profileIcon = document.getElementById("profile-image");
     profileIcon.src = image;
 }

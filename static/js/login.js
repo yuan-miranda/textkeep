@@ -1,4 +1,7 @@
 // login.js
+import { addError } from "./module_addError.js";
+import { addNotification } from "./module_notification.js";
+
 async function handleLoginStatus(response) {
     const data = await response.json();
     switch (response.status) {

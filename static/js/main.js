@@ -1,4 +1,6 @@
 // main.js
-document.addEventListener("DOMContentLoaded", () => {
-    autoLogin();
+import { autoLogin } from "./module_autologin.js";
+
+document.addEventListener("DOMContentLoaded", async () => {
+    await autoLogin();
 });
