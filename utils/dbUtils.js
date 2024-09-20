@@ -2,6 +2,9 @@
 const fs = require('fs');
 const pool = require('../config/db');
 
+/**
+ * Initializes the database by creating the necessary tables.
+ */
 exports.initializeDatabase = async () => {
     const initNotes = `
         CREATE TABLE IF NOT EXISTS notes (
@@ -66,11 +69,24 @@ exports.initializeDatabase = async () => {
     }
 };
 
+/**
+ * Retrieves user data from the database.
+ * @param {String} email 
+ * @param {String} username 
+ * @returns 
+ */
 exports.getUserData = async (email, username=email) => {
     // the query could either be by email or username
     const result = await pool.query("SELECT * FROM users WHERE email = $1 OR username = $2", [email, username]);
     return result.rows[0];
 };
+
+/**
+ * Retrieves temporary user data from the database.
+ * @param {String} email 
+ * @param {String} username 
+ * @returns 
+ */
 exports.getTempUserData = async (email, username=email) => {
     const result = await pool.query("SELECT * FROM temp_users WHERE email = $1 OR username = $2", [email, username]);
     return result.rows[0];

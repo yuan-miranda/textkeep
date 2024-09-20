@@ -7,7 +7,13 @@ const pool = require('../config/db');
 const { getUserData, getTempUserData } = require('../utils/dbUtils');
 const { sendEmailVerification } = require('./sessionController');
 
-// essentially the same as the autoLogin function (literally)
+
+/**
+ * Retrieves user data from the database and sends it to the client.
+ * @param {Object} req 
+ * @param {Object} res 
+ * @returns 
+ */
 exports.account = async (req, res) => {
     const loginToken = req.cookies ? req.cookies.login_token : null;
     if (!loginToken) return res.status(401).json({ error: "No login token found" });
@@ -24,6 +30,13 @@ exports.account = async (req, res) => {
     }
 }
 
+/**
+ * Not really sure if this is a proper way to implement a login function. This just sets a backend cookie with the user's email,
+ * so that it will persist. But hey it works.
+ * @param {Object} req 
+ * @param {Object} res 
+ * @returns 
+ */
 exports.login = async (req, res) => {
     if (req.cookies.login_token) return res.status(401).json({ error: "User already logged in" });
     
@@ -52,6 +65,13 @@ exports.login = async (req, res) => {
     }
 };
 
+/**
+ * More like pre-registering a user. This function inserts the user data into the temp_users table, and sends an email verification
+ * to the specified email address. The user must click the link in the email to verify their email and move their data to the users table.
+ * @param {Object} req 
+ * @param {Object} res 
+ * @returns 
+ */
 exports.register = async (req, res) => {
     if (req.cookies.login_token) return res.status(401).json({ error: "User already logged in" });
     const { username, email, password } = req.body;
@@ -83,7 +103,7 @@ exports.register = async (req, res) => {
         req.session.email = email;
         console.log(`Registration session started for email: ${email}`);
 
-        // send the verification email
+        // send the email verification
         await sendEmailVerification(req);
 
         res.status(200).json({ message: "Registration session started", data: { email } });
@@ -93,6 +113,12 @@ exports.register = async (req, res) => {
     }
 };
 
+/**
+ * Logs out the user by clearing the login token cookie.
+ * @param {Object} req 
+ * @param {Object} res 
+ * @returns 
+ */
 exports.logout = (req, res) => {
     if (!req.cookies.login_token) {
         console.log("User not logged in");

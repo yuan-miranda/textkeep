@@ -4,6 +4,10 @@ const pool = require("../config/db");
 const transporter = require("../config/email");
 const { getTempUserData } = require("../utils/dbUtils");
 
+/**
+ * Sends an email verification to the user.
+ * @param {Object} req
+ */
 exports.sendEmailVerification = async (req) => {
     const { emailVerificationToken, email } = req.session;
     if (!emailVerificationToken) throw new Error("No verification token found");
@@ -28,6 +32,11 @@ exports.sendEmailVerification = async (req) => {
     }
 };
 
+/**
+ * Resends the email verification email to the user.
+ * @param {Object} req 
+ * @param {Object} res 
+ */
 exports.resendEmailVerification = async (req, res) => {
     try {
         await exports.sendEmailVerification(req);
@@ -39,6 +48,13 @@ exports.resendEmailVerification = async (req, res) => {
     }
 };
 
+/**
+ * When the user clicks the "Verify Email" from the email sent to them, this function is called. It verifies the
+ * email and moves the user from the temp_users table to the users table.
+ * @param {Object} req 
+ * @param {Object} res 
+ * @returns
+ */
 exports.verifyEmail = async (req, res) => {
     const { token } = req.query;
     if (!token) return res.redirect("/login");
@@ -47,7 +63,7 @@ exports.verifyEmail = async (req, res) => {
         console.log("Verifying email...");
         const { email } = jwt.verify(token, process.env.JWT_SECRET);
         
-        // get the user data from the temporary users table
+        // get the user data from the temp_users table
         const user = await getTempUserData(email);
         if (!user) return res.status(422).send("User not found");
 
@@ -58,7 +74,7 @@ exports.verifyEmail = async (req, res) => {
         await pool.query(queryText, values);
         console.log(`User registered successfully with email: ${email}`);
 
-        // delete the user data from the temporary users table
+        // delete the user data from the temp_users table
         await pool.query("DELETE FROM temp_users WHERE email = $1", [email]);
 
         // delete the email verification token
@@ -73,6 +89,12 @@ exports.verifyEmail = async (req, res) => {
     }
 };
 
+/**
+ * This is called when the user clicks the "Delete Account" link from the email. It deletes the user from the temp_users table.
+ * @param {Object} req 
+ * @param {Object} res 
+ * @returns 
+ */
 exports.deleteEmail = async (req, res) => {
     const { token } = req.query;
     if (!token) return res.redirect("/login");
@@ -80,7 +102,7 @@ exports.deleteEmail = async (req, res) => {
     try {
         const { email } = jwt.verify(token, process.env.JWT_SECRET);
 
-        // delete the user data from the temporary users table
+        // delete the user data from the temp_users table
         const result = await getTempUserData(email);
         if (!result) return res.status(422).send("User not found");
         await pool.query("DELETE FROM temp_users WHERE email = $1", [email]);

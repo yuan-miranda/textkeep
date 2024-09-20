@@ -1,6 +1,9 @@
 // utils/cleanup.js
 const pool = require('../config/db');
 
+/**
+ * Cleans up temporary users and expired sessions from the database.
+ */
 exports.cleanup = async () => {
     // delete the user data from the temporary users table
     try {
