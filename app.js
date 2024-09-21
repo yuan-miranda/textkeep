@@ -7,6 +7,7 @@ const pageRoutes = require("./routes/pageRoutes");
 const authRoutes = require("./routes/authRoutes");
 const sessionRoutes = require("./routes/sessionRoutes");
 const { initializeDatabase } = require("./utils/dbUtils");
+const { guestAccess } = require("./middlewares/pageMiddleware");
 const { persistentEmailVerificationReroute } = require("./middlewares/authMiddleware");
 
 const app = express();
@@ -17,7 +18,9 @@ app.use(cookieParser());
 app.use(express.static("static"));
 app.use(sessionMiddleware);
 
+app.use(guestAccess);
 app.use(persistentEmailVerificationReroute);
+
 app.use("/", pageRoutes);
 app.use("/auth", authRoutes);
 app.use("/session", sessionRoutes);

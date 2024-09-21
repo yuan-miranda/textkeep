@@ -28,7 +28,7 @@ exports.account = async (req, res) => {
         console.error("Error retrieving user data: ", err);
         res.status(500).json({ error: `Error retrieving user data: ${err}` });
     }
-}
+};
 
 /**
  * Not really sure if this is a proper way to implement a login function. This just sets a backend cookie with the user's email,
@@ -74,7 +74,7 @@ exports.login = async (req, res) => {
  */
 exports.register = async (req, res) => {
     if (req.cookies.login_token) return res.status(401).json({ error: "User already logged in" });
-    const { username, email, password } = req.body;
+    const { username, email, password, isImportGuestData } = req.body;
     try {
         // check if the username or email already exists
         const user = await getUserData(email);
@@ -101,6 +101,7 @@ exports.register = async (req, res) => {
         // generate a email verification token with a 1-day expiration
         req.session.emailVerificationToken = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: "1d" });
         req.session.email = email;
+        req.session.isImportGuestData = isImportGuestData;
         console.log(`Registration session started for email: ${email}`);
 
         // send the email verification
@@ -132,4 +133,4 @@ exports.logout = (req, res) => {
         console.error("Error logging out: ", err);
         res.status(500).json({ error: `Error logging out: ${err}` });
     }
-}
+};

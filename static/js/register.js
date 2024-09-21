@@ -4,10 +4,12 @@ import { addNotification } from "./module_notification.js";
 
 function handleRegister(e) {
     e.preventDefault();
+    let isValid = true;
     let username = document.getElementById("username-input").value;
     const email = document.getElementById("email-input").value;
     const password = document.getElementById("password-input").value;
-    let isValid = true;
+    const isImportGuestData = document.getElementById("import-guest-data-checkbox").checked;
+
     if (username) {
         // remove special characters (except for - and _)
         if (!/^[a-zA-Z0-9-_]*$/.test(username)) {
@@ -31,15 +33,16 @@ function handleRegister(e) {
     }
     if (!isValid) return;
     if (!username) username = email.split("@")[0];
-    register(username, email, password);
+
+    register(username, email, password, isImportGuestData);
 }
 
-async function register(username, email, password) {
+async function register(username, email, password, isImportGuestData) {
     try {
         const response = await fetch("/auth/register", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ username, email, password })
+            body: JSON.stringify({ username, email, password, isImportGuestData })
         });
         await handleRegisterStatus(response);
     } catch (err) {
@@ -90,7 +93,13 @@ function togglePasswordVisibilityListener() {
     });
 }
 
+function guestButtonListener() {
+    const guestButton = document.getElementById("guest-button");
+    guestButton.addEventListener("click", () => window.location.href = "/");
+}
+
 document.addEventListener("DOMContentLoaded", () => {
     registerButtonListener();
+    guestButtonListener();
     togglePasswordVisibilityListener();
 });

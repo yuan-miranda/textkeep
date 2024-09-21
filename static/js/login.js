@@ -90,7 +90,13 @@ function togglePasswordVisibilityListener() {
     });
 }
 
+function guestButtonListener() {
+    const guestButton = document.getElementById("guest-button");
+    guestButton.addEventListener("click", () => window.location.href = "/");
+}
+
 document.addEventListener("DOMContentLoaded", () => {
     loginButtonListener();
+    guestButtonListener();
     togglePasswordVisibilityListener();
 });

@@ -83,6 +83,7 @@ body .container .content .register-box form .password-box .attach-toggle-button 
     border: none;
     cursor: pointer;
 }
+
 body .container .content .register-box form div input {
     padding: 4px;
 }
@@ -101,6 +102,21 @@ body .container .content .register-box form #register-button {
 
 body .container .content .register-box form #register-button:hover {
     background-color: #0056b3;
+}
+
+body .container .content .register-box form .import-guest-data {
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    margin-top: 10px;
+}
+
+body .container .content .register-box form .import-guest-data input {
+    margin-right: 5px;
+}
+
+body .container .content .register-box form .import-guest-data label {
+    font-size: medium;
 }
 
 body .container .content .register-box form .signin-as-guest #guest-button {

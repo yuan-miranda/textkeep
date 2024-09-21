@@ -25,6 +25,17 @@ exports.initializeDatabase = async () => {
             date_deleted TIMESTAMP
         );`;
 
+    const initGuests = `
+        CREATE TABLE IF NOT EXISTS guests (
+            id SERIAL PRIMARY KEY,
+            username TEXT NOT NULL UNIQUE,
+            profile_image TEXT DEFAULT '../media/profiles/defaultprofile.png',
+            last_login TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                account_date_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            account_date_deleted TIMESTAMP,
+                storage_used INT DEFAULT 0
+        )`;
+
     const initUsers = `
         CREATE TABLE IF NOT EXISTS users (
             id SERIAL PRIMARY KEY,
@@ -34,9 +45,10 @@ exports.initializeDatabase = async () => {
             password TEXT NOT NULL,
             profile_image TEXT DEFAULT '../media/profiles/defaultprofile.png',
             last_login TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            account_date_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                account_date_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             account_date_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            account_date_deleted TIMESTAMP
+            account_date_deleted TIMESTAMP,
+                storage_used INT DEFAULT 0
         );`;
 
     const initTempUsers = `
@@ -58,6 +70,8 @@ exports.initializeDatabase = async () => {
     try {
         await pool.query(initNotes);
         console.log("Table 'notes' created successfully");
+        await pool.query(initGuests);
+        console.log("Table 'guests' created successfully");
         await pool.query(initUsers);
         console.log("Table 'users' created successfully");
         await pool.query(initTempUsers);
@@ -70,7 +84,7 @@ exports.initializeDatabase = async () => {
 };
 
 /**
- * Retrieves user data from the database.
+ * Retrieves user data from the database using either the email or username.
  * @param {String} email 
  * @param {String} username 
  * @returns 
@@ -82,7 +96,7 @@ exports.getUserData = async (email, username=email) => {
 };
 
 /**
- * Retrieves temporary user data from the database.
+ * Retrieves temporary user data from the database using either the email or username.
  * @param {String} email 
  * @param {String} username 
  * @returns 
@@ -91,3 +105,13 @@ exports.getTempUserData = async (email, username=email) => {
     const result = await pool.query("SELECT * FROM temp_users WHERE email = $1 OR username = $2", [email, username]);
     return result.rows[0];
 };
+
+/**
+ * Retrieves guest data from the database using the guestId.
+ * @param {String} guestId 
+ * @returns 
+ */
+exports.getGuestData = async (guestId) => {
+    const result = await pool.query("SELECT * FROM guests WHERE id = $1", [guestId]);
+    return result.rows[0];
+}

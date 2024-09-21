@@ -5,11 +5,14 @@ USER ACC - User account.
 	REGISTERED - User who created an account.
 		unique_id
 		username
+		bio
 		email
 		password
-		account_date_created
+		profile_image
 		last_login
-		bio
+		account_date_created
+		account_date_updated
+		account_date_deleted
 		storage
 
 TEXT - Text created

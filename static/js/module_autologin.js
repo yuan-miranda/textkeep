@@ -17,9 +17,7 @@ export async function handleLoginStatus(response) {
     const data = await response.json();
     switch (response.status) {
         case 200:
-            console.log(data.data.user.username + " is logged in");
-            const name = document.getElementById("name");
-            name.textContent = data.data.user.username;
+            document.getElementById("name").textContent = data.data.user.username;
             displayUserProfile(data.data.user.profile_image);
             break;
         case 401:

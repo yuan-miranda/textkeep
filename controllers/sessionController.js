@@ -2,7 +2,33 @@
 const jwt = require("jsonwebtoken");
 const pool = require("../config/db");
 const transporter = require("../config/email");
-const { getTempUserData } = require("../utils/dbUtils");
+const { getTempUserData, getGuestData } = require("../utils/dbUtils");
+
+/**
+ * Helper function that imports the guest data into the users table.
+ * @param {String} username 
+ * @param {String} email 
+ * @param {String} password 
+ * @param {Object} guessData 
+ */
+async function importGuestData(username, email, password, guessData) {
+    const { account_date_created, storage_used } = guessData;
+    const queryText = `INSERT INTO users (username, bio, email, password, account_date_created, storage_used) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id;`;
+    const values = [username, "", email, password, account_date_created, storage_used];
+    await pool.query(queryText, values);
+}
+
+/**
+ * Helper function that inserts the user data into the users table.
+ * @param {String} username 
+ * @param {String} email 
+ * @param {String} password 
+ */
+async function insertUserData(username, email, password) {
+    const queryText = `INSERT INTO users (username, bio, email, password) VALUES ($1, $2, $3, $4) RETURNING id;`;
+    const values = [username, "", email, password];
+    await pool.query(queryText, values);
+}
 
 /**
  * Sends an email verification to the user.
@@ -66,18 +92,31 @@ exports.verifyEmail = async (req, res) => {
         // get the user data from the temp_users table
         const user = await getTempUserData(email);
         if (!user) return res.status(422).send("User not found");
-
-        // insert the user data into the users table
+        
         const { username, password } = user;
-        const queryText = `INSERT INTO users (username, bio, email, password) VALUES ($1, $2, $3, $4) RETURNING id;`;
-        const values = [username, "", email, password];
-        await pool.query(queryText, values);
+        const isImportGuestData = req.session.isImportGuestData;
+
+        if (isImportGuestData) {
+            // import the guest data into the users table
+            const guestId = req.session.guestId;
+            const guestData = await getGuestData(guestId);
+            await importGuestData(username, email, password, guestData);
+            await pool.query("DELETE FROM guests WHERE id = $1", [guestId]);
+            res.clearCookie("guest_token");
+            console.log(`Guest data imported successfully for email: ${email}`);
+        } else {
+            // insert the user data into the users table
+            await insertUserData(username, email, password);
+        }
+
+        // generate login_token
+        const loginToken = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: "30d" });
+        res.cookie('login_token', loginToken, { httpOnly: true, sameSite: 'lax', maxAge: 30 * 24 * 60 * 60 * 1000 }); // 30 days
+        
         console.log(`User registered successfully with email: ${email}`);
 
-        // delete the user data from the temp_users table
+        // delete the user data from the temp_users table andd the token
         await pool.query("DELETE FROM temp_users WHERE email = $1", [email]);
-
-        // delete the email verification token
         delete req.session.emailVerificationToken;
         delete req.session.email;
 
