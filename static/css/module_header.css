@@ -7,48 +7,48 @@ body .container header {
     background-color: rgba(0, 0, 0, 0.1);
 }
 
-body .container header .site-logo {
+body .container .header-container header .site-logo {
     margin-left: 10px;
 }
 
-body .container header .site-logo h1 a {
+body .container .header-container header .site-logo h1 a {
     text-decoration: none;
     color: black;
 }
-body .container header nav {
+body .container .header-container header nav {
     display: flex;
     flex-direction: row;    
 }
-body .container header nav ul {
+body .container .header-container header nav ul {
     display: flex;
     flex-direction: row;
     list-style: none;
 }
-body .container header nav ul li {
+body .container .header-container header nav ul li {
     margin: 0 20px;
 }
-body .container header nav ul li a {
+body .container .header-container header nav ul li a {
     text-decoration: none;
     color: black;
     font-size: larger;
     font-weight: bold;
 }
 
-body .container header nav ul li a:hover {
+body .container .header-container header nav ul li a:hover {
     background-color: rgba(0, 0, 0, 0.1);
 }
 
-body .container header .search-box {
+body .container .header-container header .search-box {
     flex: 1;
     margin: 0 20px;
 }
 
-body .container header .search-box form input {
+body .container .header-container header .search-box form input {
     width: 250px;
     padding: 5px;
 }
 
-body .container header .search-box form button {
+body .container .header-container header .search-box form button {
     padding: 5px;
     background-color: #007bff;
     color: white;
@@ -56,13 +56,13 @@ body .container header .search-box form button {
     cursor: pointer;
 }
 
-body .container header .search-box form button:hover {
+body .container .header-container header .search-box form button:hover {
     background-color: #0056b3;
 }
 
-body .container header .profile-icon {
+body .container .header-container header .profile-icon {
     margin-left: auto;
     margin-right: 5px;
 }
 
-body .container header .profile-icon img {}
+body .container .header-container header .profile-icon img {}

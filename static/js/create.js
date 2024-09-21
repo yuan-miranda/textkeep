@@ -1,3 +1,8 @@
+// OUTDATED
+
+// create.js
+import { loadHeaderTo } from "./module_header.js";
+
 const triggerEvent = (element, eventType) => {
     const event = new Event(eventType);
     element.dispatchEvent(event);
@@ -337,7 +342,8 @@ function submitForm(formData) {
     .catch((error) => alert(`Error: ${error}`));
 }
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener('DOMContentLoaded', async () => {
+    await loadHeaderTo(document.querySelector(".header-container"));
     visibilityModes();
     durationModes();
     resizeDivider();

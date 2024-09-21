@@ -5,7 +5,7 @@ const pool = require('../config/db');
  * Cleans up temporary users and expired sessions from the database.
  */
 exports.cleanup = async () => {
-    // delete the user data from the temporary users table
+    // delete the user data from the temp_users table
     try {
         await pool.query("DELETE FROM temp_users WHERE date_created < NOW() - INTERVAL '1 day'");
         console.log("Temporary users cleaned up successfully");

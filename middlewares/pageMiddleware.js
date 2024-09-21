@@ -9,7 +9,7 @@
  * @returns 
  */
 exports.requireLoggedOutAccess = (req, res, next) => {
-    if (req.cookies.login_token) return res.redirect("/");
+    if (req.cookies.login_token) return res.redirect("/logout");
     next();
 }
 
