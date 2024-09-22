@@ -1,3 +1,5 @@
+// NOTE: Should I move the helper function to a separate file?
+
 // controllers/sessionController.js
 const jwt = require("jsonwebtoken");
 const pool = require("../config/db");
@@ -11,11 +13,14 @@ const { getTempUserData, getGuestData } = require("../utils/dbUtils");
  * @param {String} password 
  * @param {Object} guessData 
  */
-async function importGuestData(username, email, password, guessData) {
+async function importGuestData(res, username, email, password, guestId) {
+    const guessData = await getGuestData(guestId);
     const { account_date_created, storage_used } = guessData;
     const queryText = `INSERT INTO users (username, bio, email, password, account_date_created, storage_used) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id;`;
     const values = [username, "", email, password, account_date_created, storage_used];
     await pool.query(queryText, values);
+    await pool.query("DELETE FROM guests WHERE id = $1", [guestId]);
+    res.clearCookie("guest_token");
 }
 
 /**
@@ -28,6 +33,27 @@ async function insertUserData(username, email, password) {
     const queryText = `INSERT INTO users (username, bio, email, password) VALUES ($1, $2, $3, $4) RETURNING id;`;
     const values = [username, "", email, password];
     await pool.query(queryText, values);
+}
+
+/**
+ * Helper function that deletes the user from the temp_users table and clears the email verification token from the session.
+ * @param {Object} req 
+ * @param {String} email 
+ */
+async function deleteTempUser(req, email) {
+    await pool.query("DELETE FROM temp_users WHERE email = $1", [email]);
+    delete req.session.emailVerificationToken;
+    delete req.session.email;
+}
+
+/**
+ * Helper function that generates a login token cookie with a 30-day expiration. A direct login is performed.
+ * @param {Object} res 
+ * @param {String} email 
+ */
+function onVerifyLogin(res, email) {
+    const loginToken = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: "30d" });
+    res.cookie('login_token', loginToken, { httpOnly: true, sameSite: 'lax', maxAge: 30 * 24 * 60 * 60 * 1000 }); // 30 days
 }
 
 /**
@@ -92,33 +118,21 @@ exports.verifyEmail = async (req, res) => {
         // get the user data from the temp_users table
         const user = await getTempUserData(email);
         if (!user) return res.status(422).send("User not found");
-        
         const { username, password } = user;
-        const isImportGuestData = req.session.isImportGuestData;
 
-        if (isImportGuestData) {
+        if (req.session.isImportGuestData) {
             // import the guest data into the users table
-            const guestId = req.session.guestId;
-            const guestData = await getGuestData(guestId);
-            await importGuestData(username, email, password, guestData);
-            await pool.query("DELETE FROM guests WHERE id = $1", [guestId]);
-            res.clearCookie("guest_token");
-            console.log(`Guest data imported successfully for email: ${email}`);
+            await importGuestData(res, username, email, password, req.session.guestId);
+            console.log(`Guest user registered successfully with email: ${email}`);
         } else {
             // insert the user data into the users table
             await insertUserData(username, email, password);
+            console.log(`User registered successfully with email: ${email}`);
         }
 
-        // generate login_token
-        const loginToken = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: "30d" });
-        res.cookie('login_token', loginToken, { httpOnly: true, sameSite: 'lax', maxAge: 30 * 24 * 60 * 60 * 1000 }); // 30 days
-        
-        console.log(`User registered successfully with email: ${email}`);
-
-        // delete the user data from the temp_users table andd the token
-        await pool.query("DELETE FROM temp_users WHERE email = $1", [email]);
-        delete req.session.emailVerificationToken;
-        delete req.session.email;
+        // generate a login token cookie with a 30-day expiration and delete the user data from the temp_users table
+        onVerifyLogin(res, email);
+        await deleteTempUser(req, email);
 
         console.log(`Email verification completed for: ${email}`);
         res.status(200).send("User registered successfully");

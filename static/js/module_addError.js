@@ -1,4 +1,4 @@
-// module_addError.js
+// static/js/module_addError.js
 export function removeBorderOnInteract(element, elementInteract=element) {
     elementInteract.addEventListener("focus", () => element.style.border = "");
     elementInteract.addEventListener("input", () => element.style.border = "");

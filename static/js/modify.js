@@ -1,6 +1,6 @@
 // OUTDATED
 
-// modify.js
+// static/js/modify.js
 import { loadHeaderTo } from "./module_header.js";
 import { addNotification } from "./module_notification.js";
 

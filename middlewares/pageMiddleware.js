@@ -14,7 +14,7 @@ const { getGuestData } = require('../utils/dbUtils');
 exports.requireLoggedOutAccess = (req, res, next) => {
     if (req.cookies.login_token) return res.redirect("/logout");
     next();
-}
+};
 
 /**
  * Simple middleware that redirects the user to the login page if they are not logged in.
@@ -27,7 +27,7 @@ exports.requireLoggedOutAccess = (req, res, next) => {
 exports.requireLoggedInAccess = (req, res, next) => {
     if (!req.cookies.login_token) return res.redirect("/login");
     next();
-}
+};
 
 /**
  * Middleware that is initialized when the user accesses the website. It creates a guest
@@ -61,4 +61,4 @@ exports.guestAccess = async (req, res, next) => {
         }
     }
     next();
-}
+};

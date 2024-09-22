@@ -1,4 +1,4 @@
-// module_autologin.js
+// static/js/module_autologin.js
 import { addNotification } from "./module_notification.js";
 
 export async function autoLogin() {
@@ -24,6 +24,7 @@ export async function handleLoginStatus(response) {
         case 422:
         case 500:
             displayUserProfile();
+            addNotification(data.error, "bad");
             break;
         default:
             displayUserProfile();

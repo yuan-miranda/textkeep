@@ -1,4 +1,4 @@
-// module_notification.js
+// static/js/module_notification.js
 export function addNotification(message, type) {
     const notificatioContainer = document.querySelector(".notification-container");
     const notification = document.createElement("div");
@@ -18,11 +18,11 @@ export function addNotification(message, type) {
     notificationTimeout(notification);
 }
 
-export function removeNotification(notification) {
-    notification.remove();
-}
-
 export function notificationTimeout(notification) {
     // remove notification after 10 seconds
     setTimeout(() => removeNotification(notification), 10000);
+}
+
+export function removeNotification(notification) {
+    notification.remove();
 }

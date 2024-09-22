@@ -4,24 +4,30 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const pool = require('../config/db');
-const { getUserData, getTempUserData } = require('../utils/dbUtils');
+const { getUserData, getTempUserData, getGuestData } = require('../utils/dbUtils');
 const { sendEmailVerification } = require('./sessionController');
-
 
 /**
  * Retrieves user data from the database and sends it to the client.
+ * This either fetches the registered user or the guest user data.
  * @param {Object} req 
  * @param {Object} res 
  * @returns 
  */
 exports.account = async (req, res) => {
     const loginToken = req.cookies ? req.cookies.login_token : null;
-    if (!loginToken) return res.status(401).json({ error: "No login token found" });
-
+    const guestToken = req.cookies ? req.cookies.guest_token : null;
+    if (!loginToken && !guestToken) return res.status(401).json({ error: "No login token found" });
     try {
-        const { email } = jwt.verify(loginToken, process.env.JWT_SECRET);
-        const user = await getUserData(email);
-
+        // get the user data
+        let user;
+        if (loginToken) {
+            const { email } = jwt.verify(loginToken, process.env.JWT_SECRET);
+            user = await getUserData(email);
+        } else {
+            const { guestId } = jwt.verify(guestToken, process.env.JWT_SECRET);
+            user = await getGuestData(guestId);
+        }
         if (!user) return res.status(422).json({ error: "User not found" });
         res.status(200).json({ message: "User data retrieved successfully", data: { user } });
     } catch (err) {
@@ -53,7 +59,8 @@ exports.login = async (req, res) => {
         const { email } = user;
         const loginToken = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: "30d" });
         res.cookie('login_token', loginToken, { httpOnly: true, sameSite: 'lax', maxAge: 30 * 24 * 60 * 60 * 1000 }); // 30 days
-
+        res.clearCookie('guest_token');
+        
         // update last login timestamp
         await pool.query("UPDATE users SET last_login = CURRENT_TIMESTAMP WHERE email = $1", [email]);
         console.log(`User logged in successfully with email: ${email}`);

@@ -1,4 +1,4 @@
-// register.js
+// static/js/register.js
 import { addError } from "./module_addError.js";
 import { addNotification } from "./module_notification.js";
 

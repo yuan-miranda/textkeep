@@ -6,12 +6,12 @@ const pgSession = require("connect-pg-simple")(session);
 module.exports = session({
     store: new pgSession({
         pool: pool,
-        tableName: "sessions"
+        tableName: "sessions",
     }),
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
     cookie: {
-        maxAge: 24 * 60 * 60 * 1000 // 24 hours
-    }
+        maxAge: 24 * 60 * 60 * 1000, // 24 hours
+    },
 });

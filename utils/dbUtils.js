@@ -31,9 +31,9 @@ exports.initializeDatabase = async () => {
             username TEXT NOT NULL UNIQUE,
             profile_image TEXT DEFAULT '../media/profiles/defaultprofile.png',
             last_login TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                account_date_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            account_date_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             account_date_deleted TIMESTAMP,
-                storage_used INT DEFAULT 0
+            storage_used INT DEFAULT 0
         )`;
 
     const initUsers = `
@@ -45,10 +45,10 @@ exports.initializeDatabase = async () => {
             password TEXT NOT NULL,
             profile_image TEXT DEFAULT '../media/profiles/defaultprofile.png',
             last_login TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                account_date_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            account_date_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             account_date_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             account_date_deleted TIMESTAMP,
-                storage_used INT DEFAULT 0
+            storage_used INT DEFAULT 0
         );`;
 
     const initTempUsers = `
@@ -114,4 +114,4 @@ exports.getTempUserData = async (email, username=email) => {
 exports.getGuestData = async (guestId) => {
     const result = await pool.query("SELECT * FROM guests WHERE id = $1", [guestId]);
     return result.rows[0];
-}
+};

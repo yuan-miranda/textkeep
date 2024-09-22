@@ -1,6 +1,6 @@
 // OUTDATED
 
-// create.js
+// static/js/create.js
 import { loadHeaderTo } from "./module_header.js";
 import { addNotification } from "./module_notification.js";
 

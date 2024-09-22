@@ -1,4 +1,4 @@
-// module_account.js
+// static/js/account.js
 import { getAccount } from "./module_account.js";
 import { loadHeaderTo } from "./module_header.js";
 

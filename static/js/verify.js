@@ -1,4 +1,4 @@
-// verify.js
+// static/js/verify.js
 import { addNotification } from "./module_notification.js";
 
 async function resendEmail() {

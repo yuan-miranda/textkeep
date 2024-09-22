@@ -1,4 +1,4 @@
-// login.js
+// static/js/login.js
 import { addError } from "./module_addError.js";
 import { addNotification } from "./module_notification.js";
 

@@ -18,6 +18,7 @@ app.use(cookieParser());
 app.use(express.static("static"));
 app.use(sessionMiddleware);
 
+// thou shalt not pass
 app.use(guestAccess);
 app.use(persistentEmailVerificationReroute);
 
