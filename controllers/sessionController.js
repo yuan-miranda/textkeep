@@ -5,6 +5,7 @@ const jwt = require("jsonwebtoken");
 const pool = require("../config/db");
 const transporter = require("../config/email");
 const { getTempUserData, getGuestData } = require("../utils/dbUtils");
+const { getDateTime } = require("../utils/time");
 
 /**
  * Helper function that imports the guest data into the users table.
@@ -77,9 +78,9 @@ exports.sendEmailVerification = async (req) => {
                 <a href="http://textkeep.ddns.net/session/email/delete?token=${emailVerificationToken}">Delete Account</a>
             `
         });
-        console.log(`Verification email sent to: ${email}`);
+        console.log(`${getDateTime()} - Verification email sent to: ${email}`);
     } catch (err) {
-        console.error("Error sending verification email: ", err);
+        console.error(`${getDateTime()} - Error sending verification email: ${err}`);
         throw new Error(`Error sending verification email: ${err}`);
     }
 };
@@ -94,7 +95,7 @@ exports.resendEmailVerification = async (req, res) => {
         await exports.sendEmailVerification(req);
         res.status(200).json({ message: "Verification email resent successfully" });
     } catch (err) {
-        console.error(err);
+        console.error(`${getDateTime()} - ${err}`);
         if (err.message === "No verification token found") res.status(401).json({ error: err.message });
         else res.status(500).json({ error: err.message });
     }
@@ -112,7 +113,6 @@ exports.verifyEmail = async (req, res) => {
     if (!token) return res.redirect("/login");
 
     try {
-        console.log("Verifying email...");
         const { email } = jwt.verify(token, process.env.JWT_SECRET);
         
         // get the user data from the temp_users table
@@ -123,21 +123,21 @@ exports.verifyEmail = async (req, res) => {
         if (req.session.isImportGuestData) {
             // import the guest data into the users table
             await importGuestData(res, username, email, password, req.session.guestId);
-            console.log(`Guest user registered successfully with email: ${email}`);
+            console.log(`${getDateTime()} - Guest user registered successfully with email: ${email}`);
         } else {
             // insert the user data into the users table
             await insertUserData(username, email, password);
-            console.log(`User registered successfully with email: ${email}`);
+            console.log(`${getDateTime()} - User registered successfully with email: ${email}`);
         }
 
         // generate a login token cookie with a 30-day expiration and delete the user data from the temp_users table
         onVerifyLogin(res, email);
         await deleteTempUser(req, email);
 
-        console.log(`Email verification completed for: ${email}`);
+        console.log(`${getDateTime()} - Email verification completed for: ${email}`);
         res.status(200).send("User registered successfully");
     } catch (err) {
-        console.error("Error verifying email: ", err);
+        console.error(`${getDateTime()} - Error verifying email: ${err}`);
         res.status(500).send(`Error verifying email: ${err}`);
     }
 };
@@ -159,7 +159,7 @@ exports.deleteEmail = async (req, res) => {
         const result = await getTempUserData(email);
         if (!result) return res.status(422).send("User not found");
         await pool.query("DELETE FROM temp_users WHERE email = $1", [email]);
-        console.log(`User deleted successfully with email: ${email}`);
+        console.log(`${getDateTime()} - User deleted successfully with email: ${email}`);
 
         // delete the email verification token
         delete req.session.emailVerificationToken;
@@ -167,7 +167,7 @@ exports.deleteEmail = async (req, res) => {
 
         res.status(200).send("User deleted successfully");
     } catch (err) {
-        console.error("Error deleting email: ", err);
+        console.error(`${getDateTime()} - Error deleting email: ${err}`);
         res.status(500).send(`Error deleting email: ${err}`);
     }
 };

@@ -1,6 +1,7 @@
 // utils/dbUtils.js
 const fs = require('fs');
 const pool = require('../config/db');
+const { getDateTime } = require('./time');
 
 /**
  * Initializes the database by creating the necessary tables.
@@ -69,17 +70,17 @@ exports.initializeDatabase = async () => {
 
     try {
         await pool.query(initNotes);
-        console.log("Table 'notes' created successfully");
+        console.log(`${getDateTime()} - Table 'notes' created successfully`);
         await pool.query(initGuests);
-        console.log("Table 'guests' created successfully");
+        console.log(`${getDateTime()} - Table 'guests' created successfully`);
         await pool.query(initUsers);
-        console.log("Table 'users' created successfully");
+        console.log(`${getDateTime()} - Table 'users' created successfully`);
         await pool.query(initTempUsers);
-        console.log("Table 'temp_users' created successfully");
+        console.log(`${getDateTime()} - Table 'temp_users' created successfully`);
         await pool.query(initSessions);
-        console.log("Table 'sessions' created successfully");
+        console.log(`${getDateTime()} - Table 'sessions' created successfully`);
     } catch (err) {
-        console.error("Error creating table: ", err);
+        console.error(`${getDateTime()} - Error creating table: ${err}`);
     }
 };
 

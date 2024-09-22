@@ -7,6 +7,7 @@ const pageRoutes = require("./routes/pageRoutes");
 const authRoutes = require("./routes/authRoutes");
 const sessionRoutes = require("./routes/sessionRoutes");
 const { initializeDatabase } = require("./utils/dbUtils");
+const { getDateTime } = require("./utils/time");
 const { guestAccess } = require("./middlewares/pageMiddleware");
 const { persistentEmailVerificationReroute } = require("./middlewares/authMiddleware");
 
@@ -30,7 +31,7 @@ app.use("/session", sessionRoutes);
 app.use((req, res) => res.status(404).send("Page Not Found"));
 
 app.listen(port, async () => {
-    console.log(`Server running on port ${port}`);
+    console.log(`${getDateTime()} - Server running on port ${port}`);
     await initializeDatabase();
     require("./scheduled-tasks/scheduledTasks");
 });

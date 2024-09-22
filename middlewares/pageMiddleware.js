@@ -2,6 +2,7 @@
 const jwt = require('jsonwebtoken');
 const pool = require('../config/db');
 const { getGuestData } = require('../utils/dbUtils');
+const { getDateTime } = require('../utils/time');
 
 /**
  * Simple middleware that redirects the user to the home page if they are already logged in.
@@ -48,7 +49,7 @@ exports.guestAccess = async (req, res, next) => {
         // create a guest token with a 30-day expiration
         const guestToken = jwt.sign({ guestId }, process.env.JWT_SECRET, { expiresIn: "30d" });
         res.cookie('guest_token', guestToken, { httpOnly: true, sameSite: 'lax', maxAge: 30 * 24 * 60 * 60 * 1000 }); // 30 days
-        console.log(`Guest session started with id: ${guestId}`);
+        console.log(`${getDateTime()} - Guest session started with id: ${guestId}`);
     }
 
     // load the guest session if the user has a guest token
@@ -57,7 +58,7 @@ exports.guestAccess = async (req, res, next) => {
         const guessData = await getGuestData(guestId);
         if (guessData) {
             req.session.guestId = guestId;
-            console.log(`Guest session resumed with id: ${guestId}`);
+            console.log(`${getDateTime()} - Guest session resumed with id: ${guestId}`);
         }
     }
     next();

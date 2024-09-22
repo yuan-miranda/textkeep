@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const pool = require('../config/db');
 const { getUserData, getTempUserData, getGuestData } = require('../utils/dbUtils');
+const { getDateTime } = require('../utils/time');
 const { sendEmailVerification } = require('./sessionController');
 
 /**
@@ -31,7 +32,7 @@ exports.account = async (req, res) => {
         if (!user) return res.status(422).json({ error: "User not found" });
         res.status(200).json({ message: "User data retrieved successfully", data: { user } });
     } catch (err) {
-        console.error("Error retrieving user data: ", err);
+        console.error(`${getDateTime()} - Error retrieving user data: ${err}`);
         res.status(500).json({ error: `Error retrieving user data: ${err}` });
     }
 };
@@ -63,11 +64,11 @@ exports.login = async (req, res) => {
         
         // update last login timestamp
         await pool.query("UPDATE users SET last_login = CURRENT_TIMESTAMP WHERE email = $1", [email]);
-        console.log(`User logged in successfully with email: ${email}`);
+        console.log(`${getDateTime()} - User logged in successfully with email: ${email}`);
 
         res.status(200).json({ message: "User logged in successfully" });
     } catch (err) {
-        console.error("Error logging in: ", err);
+        console.error(`${getDateTime()} - Error logging in: ${err}`);
         res.status(500).json({ error: `Error logging in: ${err}` });
     }
 };
@@ -103,20 +104,20 @@ exports.register = async (req, res) => {
         const queryText = `INSERT INTO temp_users (username, email, password) VALUES ($1, $2, $3) RETURNING email;`;
         const values = [username, email, hashedPassword];
         const result = await pool.query(queryText, values);
-        console.log(`User registered successfully with email: ${result.rows[0].email}`);
+        console.log(`${getDateTime()} - User registered successfully with email: ${result.rows[0].email}`);
 
         // generate a email verification token with a 1-day expiration
         req.session.emailVerificationToken = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: "1d" });
         req.session.email = email;
         req.session.isImportGuestData = isImportGuestData;
-        console.log(`Registration session started for email: ${email}`);
+        console.log(`${getDateTime()} - Registration session started for email: ${email}`);
 
         // send the email verification
         await sendEmailVerification(req);
 
         res.status(200).json({ message: "Registration session started", data: { email } });
     } catch (err) {
-        console.error("Error registering user: ", err);
+        console.error(`${getDateTime()} - Error registering user: ${err}`);
         res.status(500).json({ error: `Error registering user: ${err}` });
     }
 };
@@ -129,7 +130,7 @@ exports.register = async (req, res) => {
  */
 exports.logout = (req, res) => {
     if (!req.cookies.login_token) {
-        console.log("User not logged in");
+        console.log(`${getDateTime()} - User not logged in`);
         return res.status(401).json({ error: "User not logged in" });
     }
     // clear the login token cookie
@@ -137,7 +138,7 @@ exports.logout = (req, res) => {
         res.clearCookie('login_token');
         res.status(200).json({ message: "User logged out successfully" });
     } catch (err) {
-        console.error("Error logging out: ", err);
+        console.error(`${getDateTime()} - Error logging out: ${err}`);
         res.status(500).json({ error: `Error logging out: ${err}` });
     }
 };
