@@ -1,4 +1,4 @@
-// static/js/main.js
+// static/js/about.js
 import { autoLogin } from "./module_autologin.js";
 import { loadHeaderTo } from "./module_header.js";
 
