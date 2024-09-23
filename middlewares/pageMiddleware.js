@@ -1,6 +1,7 @@
 // middlewares/pageMiddleware.js
 const jwt = require('jsonwebtoken');
 const pool = require('../config/db');
+const { mkGuestToken } = require('../config/token');
 const { getGuestData } = require('../utils/dbUtils');
 const { getDateTime } = require('../utils/time');
 
@@ -47,7 +48,7 @@ exports.guestAccess = async (req, res, next) => {
         req.session.guestId = guestId;
 
         // create a guest token with a 30-day expiration
-        const guestToken = jwt.sign({ guestId }, process.env.JWT_SECRET, { expiresIn: "30d" });
+        const guestToken = mkGuestToken(guestId);
         res.cookie('guest_token', guestToken, { httpOnly: true, sameSite: 'lax', maxAge: 30 * 24 * 60 * 60 * 1000 }); // 30 days
         console.log(`${getDateTime()} - Guest session started with id: ${guestId}`);
     }

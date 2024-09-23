@@ -1,5 +1,4 @@
 // middlewares/authMiddleware.js
-const jwt = require('jsonwebtoken');
 
 /**
  * A middleware that softlocks routes (except from those in ignoreRoutes array) if the user registers an account but hasn't 

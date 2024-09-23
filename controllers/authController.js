@@ -4,6 +4,7 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const pool = require('../config/db');
+const { mkLoginToken, mkVerificationToken } = require('../config/token');
 const { getUserData, getTempUserData, getGuestData } = require('../utils/dbUtils');
 const { getDateTime } = require('../utils/time');
 const { sendEmailVerification } = require('./sessionController');
@@ -58,7 +59,7 @@ exports.login = async (req, res) => {
 
         // generate a login token cookie with a 30-day expiration
         const { email } = user;
-        const loginToken = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: "30d" });
+        const loginToken = mkLoginToken(email);
         res.cookie('login_token', loginToken, { httpOnly: true, sameSite: 'lax', maxAge: 30 * 24 * 60 * 60 * 1000 }); // 30 days
         res.clearCookie('guest_token');
         
@@ -107,7 +108,7 @@ exports.register = async (req, res) => {
         console.log(`${getDateTime()} - User registered successfully with email: ${result.rows[0].email}`);
 
         // generate a email verification token with a 1-day expiration
-        req.session.emailVerificationToken = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: "1d" });
+        req.session.emailVerificationToken = mkVerificationToken(email);
         req.session.email = email;
         req.session.isImportGuestData = isImportGuestData;
         console.log(`${getDateTime()} - Registration session started for email: ${email}`);

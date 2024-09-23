@@ -3,6 +3,7 @@
 // controllers/sessionController.js
 const jwt = require("jsonwebtoken");
 const pool = require("../config/db");
+const { mkLoginToken } = require("../config/token");
 const transporter = require("../config/email");
 const { getTempUserData, getGuestData } = require("../utils/dbUtils");
 const { getDateTime } = require("../utils/time");
@@ -53,7 +54,7 @@ async function deleteTempUser(req, email) {
  * @param {String} email 
  */
 function onVerifyLogin(res, email) {
-    const loginToken = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: "30d" });
+    const loginToken = mkLoginToken(email);
     res.cookie('login_token', loginToken, { httpOnly: true, sameSite: 'lax', maxAge: 30 * 24 * 60 * 60 * 1000 }); // 30 days
 }
 
