@@ -12,6 +12,7 @@ router.get("/logout", requireLoggedInAccess, sendPage("logout.html"));
 router.get("/create", sendPage("create.html"));
 router.get("/modify", sendPage("modify.html"));
 router.get("/account", sendPage("account.html"));
+router.get("/settings", sendPage("settings.html"));
 router.get("/account/email/verify", sendPage("verify.html"));
 
 module.exports = router;
