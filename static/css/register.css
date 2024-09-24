@@ -31,21 +31,6 @@ body .container .content .register-box p a {
     color: #007bff;
 }
 
-/* body .container .content .register-box .forgot-password {
-    font-size: medium;
-    display: flex;
-    justify-content: end;
-}
-
-body .container .content .register-box .forgot-password a {
-    text-decoration: none;
-    color: #dc3545;
-}
-
-body .container .content .register-box .forgot-password a:hover {
-    color: #a71d2a;
-} */
-
 body .container .content .register-box form {
     padding-top: 30px;
 }
@@ -67,7 +52,7 @@ body .container .content .register-box form .username-error,
 body .container .content .register-box form .email-error,
 body .container .content .register-box form .password-error {
     font-size: small;
-    color: red;
+    color: #dc3545;
 }
 
 body .container .content .register-box form .password-box .attach-toggle-button {
@@ -94,7 +79,7 @@ body .container .content .register-box form #register-button {
     padding: 10px;
     background-color: #007bff;
     border-radius: 5px;
-    color: white;
+    color: #fff;
     border: none;
     cursor: pointer;
     font-size: medium;

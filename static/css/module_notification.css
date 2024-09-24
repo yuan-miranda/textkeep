@@ -13,7 +13,7 @@ body .container .content .notification-container .notification-good {
     align-items: center;
     justify-content: space-between;
     background-color: #28a745;
-    color: white;
+    color: #fff;
     padding: 10px;
     margin: 2px;
     border-radius: 5px;
@@ -31,7 +31,7 @@ body .container .content .notification-container .notification-bad {
     align-items: center;
     justify-content: space-between;
     background-color: #dc3545;
-    color: white;
+    color: #fff;
     padding: 10px;
     margin: 2px;
     border-radius: 5px;
@@ -48,7 +48,7 @@ body .container .content .notification-container .notification-warning {
     align-items: center;
     justify-content: space-between;
     background-color: #ffc107;
-    color: white;
+    color: #fff;
     padding: 10px;
     margin: 2px;
     border-radius: 5px;
@@ -66,5 +66,5 @@ body .container .content .notification-container #notification-close {
 }
 
 body .container .content .notification-container #notification-close:hover {
-    color: black;
+    color: #000;
 }
