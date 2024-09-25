@@ -4,3 +4,7 @@ body .container .content {
     display: flex;
     flex-direction: column;
 }
+
+body .container .content .example {
+    padding: 10px;
+}

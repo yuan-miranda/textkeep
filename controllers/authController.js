@@ -38,6 +38,30 @@ exports.account = async (req, res) => {
     }
 };
 
+exports.settings = async (req, res) => {
+    const loginToken = req.cookies ? req.cookies.login_token : null;
+    const guestToken = req.cookies ? req.cookies.guest_token : null;
+    if (!loginToken && !guestToken) return res.status(401).json({ error: "No login token found" });
+    try {
+        // get the user data
+        let user;
+        if (loginToken) {
+            const { email } = jwt.verify(loginToken, process.env.JWT_SECRET);
+            user = await getUserData(email);
+        } else {
+            const { guestId } = jwt.verify(guestToken, process.env.JWT_SECRET);
+            user = await getGuestData(guestId);
+        }
+        if (!user) return res.status(422).json({ error: "User not found" });
+
+        // res.status(200).json({ message: "User data retrieved successfully", data: { user } });
+        
+    } catch (err) {
+        console.error(`${getDateTime()} - Error retrieving user data: ${err}`);
+        res.status(500).json({ error: `Error retrieving user data: ${err}` });
+    }
+}
+
 /**
  * Not really sure if this is a proper way to implement a login function. This just sets a backend cookie with the user's email,
  * so that it will persist. But hey it works.
