@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const pool = require('../config/db');
 const { mkLoginToken, mkVerificationToken } = require('../config/token');
-const { getUserData, getTempUserData, getGuestData } = require('../utils/dbUtils');
+const { getUserData, getTempUserData, getGuestData } = require('../utils/initDb');
 const { getDateTime } = require('../utils/time');
 const { sendEmailVerification } = require('./sessionController');
 

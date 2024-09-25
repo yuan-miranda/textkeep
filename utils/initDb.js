@@ -1,4 +1,4 @@
-// utils/dbUtils.js
+// utils/initDb.js
 const fs = require('fs');
 const pool = require('../config/db');
 const { getDateTime } = require('./time');
@@ -66,6 +66,18 @@ exports.initializeDatabase = async () => {
             sid TEXT PRIMARY KEY NOT NULL,
             sess JSON NOT NULL,
             expire TIMESTAMP NOT NULL
+        );`;
+
+    const initUserSettings = `
+        CREATE TABLE IF NOT EXISTS user_settings (
+            id SERIAL PRIMARY KEY,
+            user_id INT NOT NULL,
+
+            -- Settings start here
+            dark_mode BOOLEAN DEFAULT FALSE,
+            is_gae 
+
+            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
         );`;
 
     try {

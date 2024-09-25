@@ -2,7 +2,7 @@
 const jwt = require('jsonwebtoken');
 const pool = require('../config/db');
 const { mkGuestToken } = require('../config/token');
-const { getGuestData } = require('../utils/dbUtils');
+const { getGuestData } = require('../utils/initDb');
 const { getDateTime } = require('../utils/time');
 
 /**

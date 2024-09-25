@@ -5,7 +5,7 @@ const jwt = require("jsonwebtoken");
 const pool = require("../config/db");
 const { mkLoginToken } = require("../config/token");
 const transporter = require("../config/email");
-const { getTempUserData, getGuestData } = require("../utils/dbUtils");
+const { getTempUserData, getGuestData } = require("../utils/initDb");
 const { getDateTime } = require("../utils/time");
 
 /**
