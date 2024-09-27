@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const pool = require('../config/db');
 const { mkLoginToken, mkVerificationToken } = require('../config/token');
-const { getUserData, getTempUserData, getGuestData } = require('../utils/initDb');
+const { getUserData, getTempUserData, getGuestData, getUserSettings, getGuestSettings, updateUserSettings, updateGuestSettings } = require('../utils/initDb');
 const { getDateTime } = require('../utils/time');
 const { sendEmailVerification } = require('./sessionController');
 
@@ -38,24 +38,47 @@ exports.account = async (req, res) => {
     }
 };
 
+/**
+ * Handles both GET and POST requests for the user settings.
+ * GET: Retrieves the user settings from the database and sends it to the client.
+ * POST: Updates the user settings in the database.
+ * @param {Object} req 
+ * @param {Object} res 
+ * @returns 
+ */
 exports.settings = async (req, res) => {
     const loginToken = req.cookies ? req.cookies.login_token : null;
     const guestToken = req.cookies ? req.cookies.guest_token : null;
     if (!loginToken && !guestToken) return res.status(401).json({ error: "No login token found" });
+    const { settings } = req.body;
+
     try {
-        // get the user data
-        let user;
+        let userId;
+        let userSettings;
+        // get the user data and settings
         if (loginToken) {
             const { email } = jwt.verify(loginToken, process.env.JWT_SECRET);
-            user = await getUserData(email);
+            const { id } = await getUserData(email);
+            userSettings = await getUserSettings(id);
+            userId = id;
         } else {
             const { guestId } = jwt.verify(guestToken, process.env.JWT_SECRET);
-            user = await getGuestData(guestId);
+            const { id } = await getGuestData(guestId);
+            userSettings = await getGuestSettings(id);
+            userId = id;
         }
-        if (!user) return res.status(422).json({ error: "User not found" });
-
-        // res.status(200).json({ message: "User data retrieved successfully", data: { user } });
         
+        // return an error if the user or settings are not found
+        if (!userId) return res.status(422).json({ error: "User not found" });
+        if (!userSettings) return res.status(422).json({ error: "User settings not found" });
+        
+        //  retrieve the user settings from the database (GET request)
+        if (!settings) return res.status(200).json({ message: "User settings retrieved successfully", data: { userSettings } });
+        
+        // update the user settings in the database (POST request)
+        if (loginToken) await updateUserSettings(userId, settings);
+        else await updateGuestSettings(userId, settings);
+        res.status(200).json({ message: "User settings updated successfully" });
     } catch (err) {
         console.error(`${getDateTime()} - Error retrieving user data: ${err}`);
         res.status(500).json({ error: `Error retrieving user data: ${err}` });
@@ -71,7 +94,6 @@ exports.settings = async (req, res) => {
  */
 exports.login = async (req, res) => {
     if (req.cookies.login_token) return res.status(401).json({ error: "User already logged in" });
-    
     const { usernameEmail, password } = req.body;
     try {
         const user = await getUserData(usernameEmail);

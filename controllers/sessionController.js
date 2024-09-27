@@ -5,7 +5,7 @@ const jwt = require("jsonwebtoken");
 const pool = require("../config/db");
 const { mkLoginToken } = require("../config/token");
 const transporter = require("../config/email");
-const { getTempUserData, getGuestData } = require("../utils/initDb");
+const { getTempUserData, getGuestData, getGuestSettings, updateUserSettings } = require("../utils/initDb");
 const { getDateTime } = require("../utils/time");
 
 /**
@@ -17,10 +17,20 @@ const { getDateTime } = require("../utils/time");
  */
 async function importGuestData(res, username, email, password, guestId) {
     const guessData = await getGuestData(guestId);
+    const guestSettings = await getGuestSettings(guestId);
     const { account_date_created, storage_used } = guessData;
-    const queryText = `INSERT INTO users (username, bio, email, password, account_date_created, storage_used) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id;`;
-    const values = [username, "", email, password, account_date_created, storage_used];
-    await pool.query(queryText, values);
+
+    // insert the guest data into the users table
+    const result = await insertUserData(username, email, password, account_date_created, storage_used);
+    const userId = result.id;
+
+    // remove guest_id from the guest settings object cause the settings table will now point to the user_id
+    delete guestSettings.guest_id;
+
+    // update the user settings with the guest settings
+    await updateUserSettings(userId, guestSettings);
+
+    // delete the guest data from the guests table and clear the guest token cookie
     await pool.query("DELETE FROM guests WHERE id = $1", [guestId]);
     res.clearCookie("guest_token");
 }
@@ -31,10 +41,12 @@ async function importGuestData(res, username, email, password, guestId) {
  * @param {String} email 
  * @param {String} password 
  */
-async function insertUserData(username, email, password) {
-    const queryText = `INSERT INTO users (username, bio, email, password) VALUES ($1, $2, $3, $4) RETURNING id;`;
-    const values = [username, "", email, password];
-    await pool.query(queryText, values);
+async function insertUserData(username, email, password, account_date_created=undefined, storage_used=undefined) {
+    const queryText = `INSERT INTO users (username, bio, email, password, account_date_created, storage_used) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id;`;
+    const values = [username, "", email, password, account_date_created, storage_used];
+    const result = await pool.query(queryText, values);
+    await pool.query("INSERT INTO user_settings (user_id) VALUES ($1)", [result.rows[0].id]);
+    return { id: result.rows[0].id };
 }
 
 /**

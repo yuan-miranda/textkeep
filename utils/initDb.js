@@ -74,10 +74,20 @@ exports.initializeDatabase = async () => {
             user_id INT NOT NULL,
 
             -- Settings start here
-            dark_mode BOOLEAN DEFAULT FALSE,
-            is_gae 
+            is_gae BOOLEAN DEFAULT FALSE,
 
             FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+        );`;
+
+    const initGuestSettings = `
+        CREATE TABLE IF NOT EXISTS guest_settings (
+            id SERIAL PRIMARY KEY,
+            guest_id INT NOT NULL,
+
+            -- Settings start here
+            is_gae BOOLEAN DEFAULT FALSE,
+
+            FOREIGN KEY (guest_id) REFERENCES guests(id) ON DELETE CASCADE
         );`;
 
     try {
@@ -91,6 +101,10 @@ exports.initializeDatabase = async () => {
         console.log(`${getDateTime()} - Table 'temp_users' created successfully`);
         await pool.query(initSessions);
         console.log(`${getDateTime()} - Table 'sessions' created successfully`);
+        await pool.query(initUserSettings);
+        console.log(`${getDateTime()} - Table 'user_settings' created successfully`);
+        await pool.query(initGuestSettings);
+        console.log(`${getDateTime()} - Table 'guest_settings' created successfully`);
     } catch (err) {
         console.error(`${getDateTime()} - Error creating table: ${err}`);
     }
@@ -103,7 +117,6 @@ exports.initializeDatabase = async () => {
  * @returns 
  */
 exports.getUserData = async (email, username=email) => {
-    // the query could either be by email or username
     const result = await pool.query("SELECT * FROM users WHERE email = $1 OR username = $2", [email, username]);
     return result.rows[0];
 };
@@ -127,4 +140,50 @@ exports.getTempUserData = async (email, username=email) => {
 exports.getGuestData = async (guestId) => {
     const result = await pool.query("SELECT * FROM guests WHERE id = $1", [guestId]);
     return result.rows[0];
+};
+
+/**
+ * Retrieves user settings from the database using the userId.
+ * @param {String} userId 
+ * @returns 
+ */
+exports.getUserSettings = async (userId) => {
+    const result = await pool.query("SELECT * FROM user_settings WHERE user_id = $1", [userId]);
+    return result.rows[0];
+};
+
+/**
+ * Retrieves guest settings from the database using the guestId.
+ * @param {String} guestId 
+ * @returns 
+ */
+exports.getGuestSettings = async (guestId) => {
+    const result = await pool.query("SELECT * FROM guest_settings WHERE guest_id = $1", [guestId]);
+    return result.rows[0];
+};
+
+/**
+ * Updates the guest settings in the database.
+ * @param {String} guestId 
+ * @param {Object} settings 
+ */
+exports.updateGuestSettings = async (guestId, settings) => {
+    const keys = Object.keys(settings);
+    const rows = keys.map((key, index) => `${key} = $${index + 1}`).join(", ");
+    const queryText = `UPDATE guest_settings SET ${rows} WHERE guest_id = $${keys.length + 1};`;
+    const values = [...Object.values(settings), guestId];
+    await pool.query(queryText, values);
+};
+
+/**
+ * Updates the user settings in the database.
+ * @param {String} userId 
+ * @param {Object} settings 
+ */
+exports.updateUserSettings = async (userId, settings) => {
+    const keys = Object.keys(settings);
+    const rows = keys.map((key, index) => `${key} = $${index + 1}`).join(", ");
+    const queryText = `UPDATE user_settings SET ${rows} WHERE user_id = $${keys.length + 1};`;
+    const values = [...Object.values(settings), userId];
+    await pool.query(queryText, values);
 };

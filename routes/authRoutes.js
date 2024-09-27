@@ -4,6 +4,8 @@ const router = express.Router();
 const authController = require('../controllers/authController');
 
 router.get('/account', authController.account);
+router.get('/settings', authController.settings);
+router.post('/settings', authController.settings);
 router.get('/auto-login', authController.account);
 router.post('/login', authController.login);
 router.post('/register', authController.register);

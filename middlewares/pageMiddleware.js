@@ -47,6 +47,8 @@ exports.guestAccess = async (req, res, next) => {
         const guestId = result.rows[0].id;
         req.session.guestId = guestId;
 
+        await pool.query("INSERT INTO guest_settings (guest_id) VALUES ($1)", [guestId]);
+
         // create a guest token with a 30-day expiration
         const guestToken = mkGuestToken(guestId);
         res.cookie('guest_token', guestToken, { httpOnly: true, sameSite: 'lax', maxAge: 30 * 24 * 60 * 60 * 1000 }); // 30 days
@@ -60,6 +62,9 @@ exports.guestAccess = async (req, res, next) => {
         if (guessData) {
             req.session.guestId = guestId;
             console.log(`${getDateTime()} - Guest session resumed with id: ${guestId}`);
+        } else {
+            // this means the guest token is invalid, so clear the cookie
+            res.clearCookie('guest_token');
         }
     }
     next();
