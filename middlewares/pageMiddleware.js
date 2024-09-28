@@ -1,9 +1,9 @@
 // middlewares/pageMiddleware.js
 const jwt = require('jsonwebtoken');
-const pool = require('../config/db');
 const { mkGuestToken } = require('../config/token');
-const { getGuestData } = require('../utils/initDb');
+const { getGuestData } = require('../utils/query');
 const { getDateTime } = require('../utils/time');
+const { moveToGuest, moveGuestSettings } = require('../utils/query');
 
 /**
  * Simple middleware that redirects the user to the home page if they are already logged in.
@@ -42,12 +42,11 @@ exports.guestAccess = async (req, res, next) => {
     // if the user does not have a guest token or a login token, create a guest session
     if (!req.cookies.guest_token && !req.cookies.login_token) {
         const username = `guest${Date.now()}`;
-        const result = await pool.query("INSERT INTO guests (username) VALUES ($1) RETURNING id", [username]);
-
-        const guestId = result.rows[0].id;
+        const result = await moveToGuest(username);
+        const guestId = result.id;
         req.session.guestId = guestId;
 
-        await pool.query("INSERT INTO guest_settings (guest_id) VALUES ($1)", [guestId]);
+        await moveGuestSettings(guestId);
 
         // create a guest token with a 30-day expiration
         const guestToken = mkGuestToken(guestId);

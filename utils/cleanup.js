@@ -1,5 +1,5 @@
 // utils/cleanup.js
-const pool = require('../config/db');
+const { deleteExpiredTempUsers, deleteExpiredSessions } = require('./query');
 const { getDateTime } = require('./time');
 
 /**
@@ -8,7 +8,7 @@ const { getDateTime } = require('./time');
 exports.cleanup = async () => {
     // delete the user data from the temp_users table
     try {
-        await pool.query("DELETE FROM temp_users WHERE date_created < NOW() - INTERVAL '1 day'");
+        await deleteExpiredTempUsers();
         console.log(`${getDateTime()} - Temporary users cleaned up successfully`);
     } catch (err) {
         console.error(`${getDateTime()} - Error cleaning up temporary users: ${err}`);
@@ -16,7 +16,7 @@ exports.cleanup = async () => {
 
     // delete the session data from the sessions table
     try {
-        await pool.query("DELETE FROM sessions WHERE expire < NOW()");
+        await deleteExpiredSessions();
         console.log(`${getDateTime()} - Expired sessions cleaned up successfully`);
     } catch (err) {
         console.error(`${getDateTime()} - Error cleaning up expired sessions: ${err}`);

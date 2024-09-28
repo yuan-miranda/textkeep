@@ -3,11 +3,11 @@
 // controllers/authController.js
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
-const pool = require('../config/db');
 const { mkLoginToken, mkVerificationToken } = require('../config/token');
-const { getUserData, getTempUserData, getGuestData, getUserSettings, getGuestSettings, updateUserSettings, updateGuestSettings } = require('../utils/initDb');
+const { getUserData, getTempUserData, getGuestData, getUserSettings, getGuestSettings, updateUserSettings, updateGuestSettings } = require('../utils/query');
 const { getDateTime } = require('../utils/time');
 const { sendEmailVerification } = require('./sessionController');
+const { updateLoginTimestamp, moveToTempUser } = require('../utils/query');
 
 /**
  * Retrieves user data from the database and sends it to the client.
@@ -110,7 +110,7 @@ exports.login = async (req, res) => {
         res.clearCookie('guest_token');
         
         // update last login timestamp
-        await pool.query("UPDATE users SET last_login = CURRENT_TIMESTAMP WHERE email = $1", [email]);
+        await updateLoginTimestamp(email);
         console.log(`${getDateTime()} - User logged in successfully with email: ${email}`);
 
         res.status(200).json({ message: "User logged in successfully" });
@@ -148,10 +148,7 @@ exports.register = async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, 10);
 
         // insert the new user data into the temporary users table
-        const queryText = `INSERT INTO temp_users (username, email, password) VALUES ($1, $2, $3) RETURNING email;`;
-        const values = [username, email, hashedPassword];
-        const result = await pool.query(queryText, values);
-        console.log(`${getDateTime()} - User registered successfully with email: ${result.rows[0].email}`);
+        await moveToTempUser(username, email, hashedPassword);
 
         // generate a email verification token with a 1-day expiration
         req.session.emailVerificationToken = mkVerificationToken(email);

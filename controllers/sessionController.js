@@ -2,11 +2,11 @@
 
 // controllers/sessionController.js
 const jwt = require("jsonwebtoken");
-const pool = require("../config/db");
 const { mkLoginToken } = require("../config/token");
 const transporter = require("../config/email");
-const { getTempUserData, getGuestData, getGuestSettings, updateUserSettings } = require("../utils/initDb");
+const { getTempUserData, getGuestData, getGuestSettings, updateUserSettings } = require("../utils/query");
 const { getDateTime } = require("../utils/time");
+const { deleteGuest, moveToUser, moveUserSettings, deleteTempUser } = require("../utils/query");
 
 /**
  * Helper function that imports the guest data into the users table.
@@ -31,7 +31,7 @@ async function importGuestData(res, username, email, password, guestId) {
     await updateUserSettings(userId, guestSettings);
 
     // delete the guest data from the guests table and clear the guest token cookie
-    await pool.query("DELETE FROM guests WHERE id = $1", [guestId]);
+    await deleteGuest(guestId);
     res.clearCookie("guest_token");
 }
 
@@ -42,22 +42,9 @@ async function importGuestData(res, username, email, password, guestId) {
  * @param {String} password 
  */
 async function insertUserData(username, email, password, account_date_created=undefined, storage_used=undefined) {
-    const queryText = `INSERT INTO users (username, bio, email, password, account_date_created, storage_used) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id;`;
-    const values = [username, "", email, password, account_date_created, storage_used];
-    const result = await pool.query(queryText, values);
-    await pool.query("INSERT INTO user_settings (user_id) VALUES ($1)", [result.rows[0].id]);
-    return { id: result.rows[0].id };
-}
-
-/**
- * Helper function that deletes the user from the temp_users table and clears the email verification token from the session.
- * @param {Object} req 
- * @param {String} email 
- */
-async function deleteTempUser(req, email) {
-    await pool.query("DELETE FROM temp_users WHERE email = $1", [email]);
-    delete req.session.emailVerificationToken;
-    delete req.session.email;
+    const result = await moveToUser(username, email, password, account_date_created, storage_used);
+    await moveUserSettings(result.id);
+    return { id: result.id };
 }
 
 /**
@@ -143,9 +130,13 @@ exports.verifyEmail = async (req, res) => {
             console.log(`${getDateTime()} - User registered successfully with email: ${email}`);
         }
 
-        // generate a login token cookie with a 30-day expiration and delete the user data from the temp_users table
+        // generate a login token cookie with a 30-day expiration
         onVerifyLogin(res, email);
-        await deleteTempUser(req, email);
+        
+        // delete the user data from the temp_users table
+        await deleteTempUser(email);
+        delete req.session.emailVerificationToken;
+        delete req.session.email;
 
         console.log(`${getDateTime()} - Email verification completed for: ${email}`);
         res.status(200).send("User registered successfully");
@@ -171,7 +162,7 @@ exports.deleteEmail = async (req, res) => {
         // delete the user data from the temp_users table
         const result = await getTempUserData(email);
         if (!result) return res.status(422).send("User not found");
-        await pool.query("DELETE FROM temp_users WHERE email = $1", [email]);
+        await deleteTempUser(email);
         console.log(`${getDateTime()} - User deleted successfully with email: ${email}`);
 
         // delete the email verification token
