@@ -330,7 +330,6 @@ function validFormData(formData) {
 
 // outdated, base on /login
 function submitForm(formData) {
-    console.log(formData);
     fetch("/submit", {
         method: "POST",
         headers: {

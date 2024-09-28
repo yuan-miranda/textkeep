@@ -305,7 +305,6 @@ function validFormData(formData) {
 }
 
 function submitForm(formData) {
-    console.log(formData);
     fetch("/submit", {
         method: "POST",
         headers: {

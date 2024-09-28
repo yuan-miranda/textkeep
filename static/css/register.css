@@ -32,11 +32,11 @@ body .container .content .register-box p a {
 }
 
 body .container .content .register-box form {
-    padding-top: 30px;
+    padding-top: 10px;
 }
 
 body .container .content .register-box hr {
-    margin: 20px 0 20px 0;
+    margin: 10px 0 10px 0;
 }
 
 body .container .content .register-box form .username-box,
@@ -71,11 +71,12 @@ body .container .content .register-box form .password-box .attach-toggle-button 
 }
 
 body .container .content .register-box form div input {
-    padding: 4px;
+    font-size: medium;
+    padding: 5px;
 }
 
 body .container .content .register-box form #register-button {
-    margin-top: 60px;
+    margin-top: 30px;
     padding: 10px;
     background-color: #007bff;
     border-radius: 5px;

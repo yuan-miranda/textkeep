@@ -48,11 +48,11 @@ body .container .content .login-box .forgot-password a:hover {
 }
 
 body .container .content .login-box form {
-    padding-top: 30px;
+    padding-top: 10px;
 }
 
 body .container .content .login-box hr {
-    margin: 20px 0 20px 0;
+    margin: 10px 0 10px 0;
 }
 
 body .container .content .login-box form .username-email-box,
@@ -83,12 +83,14 @@ body .container .content .login-box form .password-box .attach-toggle-button #to
     border: none;
     cursor: pointer;
 }
+
 body .container .content .login-box form div input {
-    padding: 4px;
+    font-size: medium;
+    padding: 5px;
 }
 
 body .container .content .login-box form #login-button {
-    margin-top: 60px;
+    margin-top: 30px;
     padding: 10px;
     background-color: #007bff;
     border-radius: 5px;

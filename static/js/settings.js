@@ -11,7 +11,6 @@ async function handleSettings(e) {
         is_gae: document.getElementById("is_gae").checked
     };
 
-    console.log(settings);
     await saveSettings(settings);
 }
 
