@@ -62,7 +62,7 @@ exports.guestAccess = async (req, res, next) => {
     // check if the login token is valid
     else if (req.cookies.login_token) {
         const { email } = verifyToken(req.cookies.login_token);
-        if (!email) req.clearCookie('login_token');
+        if (!email) res.clearCookie('login_token');
     }
     next();
 };
