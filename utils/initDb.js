@@ -27,7 +27,7 @@ exports.initDatabase = async () => {
         guests: `CREATE TABLE IF NOT EXISTS guests (
             id SERIAL PRIMARY KEY,
             username TEXT NOT NULL UNIQUE,
-            profile_image TEXT DEFAULT '../media/profiles/defaultprofile.png',
+            profile_image TEXT DEFAULT '../../media/profiles/defaultprofile.png',
             last_login TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             account_date_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             account_date_deleted TIMESTAMP,
@@ -39,7 +39,7 @@ exports.initDatabase = async () => {
             bio TEXT,
             email TEXT NOT NULL UNIQUE,
             password TEXT NOT NULL,
-            profile_image TEXT DEFAULT '../media/profiles/defaultprofile.png',
+            profile_image TEXT DEFAULT '../../media/profiles/defaultprofile.png',
             last_login TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             account_date_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             account_date_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -73,7 +73,7 @@ exports.initDatabase = async () => {
     };
 
     try {
-        initTables(Object.values(tables));
+        await initTables(Object.values(tables));
         console.log(`${getDateTime()} - Tables created successfully`);
     }
     catch (err) {

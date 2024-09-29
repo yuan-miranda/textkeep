@@ -199,6 +199,6 @@ exports.deleteExpiredSessions = async () => {
  * Executes a series of table creation queries.
  * @param {Array} tables - An array of SQL table creation queries.
  */
-exports.initTables = (tables) => {
-    tables.forEach(async (table) => await pool.query(table));
+exports.initTables = async (tables) => {
+    for (const table of tables) await pool.query(table);
 };

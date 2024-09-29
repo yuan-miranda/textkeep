@@ -17,6 +17,7 @@ const port = 3000;
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.static("static"));
+app.use("/media", express.static("media"));
 app.use(sessionMiddleware);
 
 // thou shalt not pass

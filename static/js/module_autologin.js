@@ -32,7 +32,7 @@ export async function handleLoginStatus(response) {
     }
 }
 
-export function displayUserProfile(image="../media/profiles/defaultprofile.png") {
+export function displayUserProfile(image="../../media/profiles/defaultprofile.png") {
     const profileIcon = document.getElementById("profile-image");
     profileIcon.src = image;
 }

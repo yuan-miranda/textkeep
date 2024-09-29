@@ -38,7 +38,7 @@ exports.requireLoggedInAccess = (req, res, next) => {
  * @param {Object} next 
  */
 exports.guestAccess = async (req, res, next) => {
-    // if the user does not have a guest token or a login token, create a guest session
+    // create a guest session if the user does not have a login token or a guest token
     if (!req.cookies.guest_token && !req.cookies.login_token) {
         const username = `guest${Date.now()}`;
         const result = await moveToGuest(username);
@@ -58,6 +58,11 @@ exports.guestAccess = async (req, res, next) => {
         const guessData = await getGuestData(guestId);
         if (guessData) req.session.guestId = guestId;
         else res.clearCookie('guest_token');
+    }
+    // check if the login token is valid
+    else if (req.cookies.login_token) {
+        const { email } = verifyToken(req.cookies.login_token);
+        if (!email) req.clearCookie('login_token');
     }
     next();
 };
