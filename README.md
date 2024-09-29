@@ -10,27 +10,9 @@ A simple text storage website for storing plain text over the Internet.
 ```
 git clone https://github.com/yuan-miranda/textkeep.git
 ```
-2. Download the following modules by running the command below inside the `textkeep` directory:
-```
-npm install
-```
-or specifically install required packages:
+2. Download the following modules inside the `textkeep` directory:
 ```
 npm install express cookie-parser dotenv express-session pg connect-pg-simple jsonwebtoken bcrypt nodemailer @sendgrid/mail node-cron
-```
-This will install the following modules:
-```
-@sendgrid/mail
-bcrypt
-connect-pg-simple
-cookie-parser
-dotenv
-express
-express-session
-jsonwebtoken
-node-cron
-nodemailer
-pg
 ```
 3. Create a `.env` file inside the `textkeep` directory with the following values.
 ```
