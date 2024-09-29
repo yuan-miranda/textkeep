@@ -8,6 +8,7 @@ router.get('/settings', authController.settings);
 router.post('/settings', authController.settings);
 router.get('/auto-login', authController.account);
 router.post('/login', authController.login);
+router.post('/forgot-password', authController.forgotPassword);
 router.post('/register', authController.register);
 router.get('/logout', authController.logout);
 

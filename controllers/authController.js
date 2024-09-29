@@ -4,7 +4,7 @@
 const { mkLoginToken, mkVerificationToken, verifyToken } = require('../config/token');
 const { getUserData, getTempUserData, getGuestData, getUserSettings, getGuestSettings, updateUserSettings, updateGuestSettings } = require('../utils/query');
 const { getDateTime } = require('../utils/time');
-const { sendEmailVerification } = require('./sessionController');
+const { sendEmailVerification, sendEmailForgotPassword } = require('./sessionController');
 const { updateLoginTimestamp, moveToTempUser } = require('../utils/query');
 const { comparePassword, hashPassword } = require('../config/hash');
 
@@ -49,6 +49,8 @@ exports.settings = async (req, res) => {
     const loginToken = req.cookies ? req.cookies.login_token : null;
     const guestToken = req.cookies ? req.cookies.guest_token : null;
     if (!loginToken && !guestToken) return res.status(401).json({ error: "No login token found" });
+    
+    // get the user settings from the request body (POST request)
     const { settings } = req.body;
 
     try {
@@ -118,6 +120,28 @@ exports.login = async (req, res) => {
         res.status(500).json({ error: `Error logging in: ${err}` });
     }
 };
+
+exports.forgotPassword = async (req, res) => {
+    const { usernameEmail } = req.body;
+    if (!usernameEmail) return res.status(422).json({ error: "Username or email is required" });
+
+    try {
+        const user = await getUserData(usernameEmail);
+        if (!user) return res.status(422).json({ error: "Username or email not found" });
+
+        req.session.password = user.password;
+        req.session.email = user.email;
+        console.log(`${getDateTime()} - Forgot password session started for email: ${user.email}`);
+
+        // send the email for password reset
+        await sendEmailForgotPassword(req);
+        
+        res.status(200).json({ message: "Forgot password session started", data: { email: user.email } });
+    } catch (err) {
+        console.error(`${getDateTime()} - Error forgot password: ${err}`);
+        res.status(500).json({ error: `Error forgot password: ${err}` });
+    }
+}
 
 /**
  * More like pre-registering a user. This function inserts the user data into the temp_users table, and sends an email verification

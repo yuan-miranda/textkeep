@@ -1,6 +1,6 @@
 // middlewares/pageMiddleware.js
 const { mkGuestToken, verifyToken } = require('../config/token');
-const { getGuestData } = require('../utils/query');
+const { getGuestData, getUserData } = require('../utils/query');
 const { getDateTime } = require('../utils/time');
 const { moveToGuest, moveGuestSettings } = require('../utils/query');
 

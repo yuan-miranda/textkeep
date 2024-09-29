@@ -100,6 +100,28 @@ exports.resendEmailVerification = async (req, res) => {
     }
 };
 
+exports.sendEmailForgotPassword = async (req) => {
+    const { password, email } = req.session;
+    if (!password) throw new Error("No forgot password token found");
+
+    try {
+        await transporter.sendMail({
+            from: process.env.EMAIL_ADDRESS,
+            to: email,
+            subject: "Forgot Password",
+            html: `
+                <p>Hello,</p>
+                <p>Your password is: <strong>${password}</strong></p>
+                <p>If you didn't request a password reset, please ignore this email.</p>
+            `
+        });
+        console.log(`${getDateTime()} - Forgot password email sent to: ${email}`);
+    } catch (err) {
+        console.error(`${getDateTime()} - Error sending forgot password email: ${err}`);
+        throw new Error(`Error sending forgot password email: ${err}`);
+    }
+};
+
 /**
  * When the user clicks the "Verify Email" from the email sent to them, this function is called. It verifies the
  * email and moves the user from the temp_users table to the users table.
