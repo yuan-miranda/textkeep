@@ -1,8 +1,7 @@
 // NOTE: Should I move the helper function to a separate file?
 
 // controllers/sessionController.js
-const jwt = require("jsonwebtoken");
-const { mkLoginToken } = require("../config/token");
+const { mkLoginToken, verifyToken } = require("../config/token");
 const transporter = require("../config/email");
 const { getTempUserData, getGuestData, getGuestSettings, updateUserSettings } = require("../utils/query");
 const { getDateTime } = require("../utils/time");
@@ -113,7 +112,7 @@ exports.verifyEmail = async (req, res) => {
     if (!token) return res.redirect("/login");
 
     try {
-        const { email } = jwt.verify(token, process.env.JWT_SECRET);
+        const { email } = verifyToken(token);
         
         // get the user data from the temp_users table
         const user = await getTempUserData(email);
@@ -157,7 +156,7 @@ exports.deleteEmail = async (req, res) => {
     if (!token) return res.redirect("/login");
 
     try {
-        const { email } = jwt.verify(token, process.env.JWT_SECRET);
+        const { email } = verifyToken(token);
 
         // delete the user data from the temp_users table
         const result = await getTempUserData(email);

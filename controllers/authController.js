@@ -1,13 +1,12 @@
 // TOFIX: notification are not shared between pages. Add persistent notification section too.
 
 // controllers/authController.js
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
-const { mkLoginToken, mkVerificationToken } = require('../config/token');
+const { mkLoginToken, mkVerificationToken, verifyToken } = require('../config/token');
 const { getUserData, getTempUserData, getGuestData, getUserSettings, getGuestSettings, updateUserSettings, updateGuestSettings } = require('../utils/query');
 const { getDateTime } = require('../utils/time');
 const { sendEmailVerification } = require('./sessionController');
 const { updateLoginTimestamp, moveToTempUser } = require('../utils/query');
+const { comparePassword, hashPassword } = require('../config/hash');
 
 /**
  * Retrieves user data from the database and sends it to the client.
@@ -24,10 +23,10 @@ exports.account = async (req, res) => {
         // get the user data
         let user;
         if (loginToken) {
-            const { email } = jwt.verify(loginToken, process.env.JWT_SECRET);
+            const { email } = verifyToken(loginToken);
             user = await getUserData(email);
         } else {
-            const { guestId } = jwt.verify(guestToken, process.env.JWT_SECRET);
+            const { guestId } = verifyToken(guestToken);
             user = await getGuestData(guestId);
         }
         if (!user) return res.status(422).json({ error: "User not found" });
@@ -57,12 +56,12 @@ exports.settings = async (req, res) => {
         let userSettings;
         // get the user data and settings
         if (loginToken) {
-            const { email } = jwt.verify(loginToken, process.env.JWT_SECRET);
+            const { email } = verifyToken(loginToken);
             const { id } = await getUserData(email);
             userSettings = await getUserSettings(id);
             userId = id;
         } else {
-            const { guestId } = jwt.verify(guestToken, process.env.JWT_SECRET);
+            const { guestId } = verifyToken(guestToken);
             const { id } = await getGuestData(guestId);
             userSettings = await getGuestSettings(id);
             userId = id;
@@ -100,7 +99,7 @@ exports.login = async (req, res) => {
 
         // check if the username or email exists and the password is correct
         if (!user) return res.status(422).json({ error: "Username or email not found" });
-        const isPasswordValid = await bcrypt.compare(password, user.password);
+        const isPasswordValid = comparePassword(password, user.password);
         if (!isPasswordValid) return res.status(401).json({ error: "Invalid password" });
 
         // generate a login token cookie with a 30-day expiration
@@ -145,7 +144,7 @@ exports.register = async (req, res) => {
         }
 
         // hash the password
-        const hashedPassword = await bcrypt.hash(password, 10);
+        const hashedPassword = hashPassword(password, 10);
 
         // insert the new user data into the temporary users table
         await moveToTempUser(username, email, hashedPassword);

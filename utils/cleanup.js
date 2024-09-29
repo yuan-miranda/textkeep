@@ -13,7 +13,6 @@ exports.cleanup = async () => {
     } catch (err) {
         console.error(`${getDateTime()} - Error cleaning up temporary users: ${err}`);
     }
-
     // delete the session data from the sessions table
     try {
         await deleteExpiredSessions();

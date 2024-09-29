@@ -1,6 +1,5 @@
 // middlewares/pageMiddleware.js
-const jwt = require('jsonwebtoken');
-const { mkGuestToken } = require('../config/token');
+const { mkGuestToken, verifyToken } = require('../config/token');
 const { getGuestData } = require('../utils/query');
 const { getDateTime } = require('../utils/time');
 const { moveToGuest, moveGuestSettings } = require('../utils/query');
@@ -53,18 +52,12 @@ exports.guestAccess = async (req, res, next) => {
         res.cookie('guest_token', guestToken, { httpOnly: true, sameSite: 'lax', maxAge: 30 * 24 * 60 * 60 * 1000 }); // 30 days
         console.log(`${getDateTime()} - Guest session started with id: ${guestId}`);
     }
-
     // load the guest session if the user has a guest token
     if (req.cookies.guest_token && !req.cookies.login_token) {
-        const { guestId } = jwt.verify(req.cookies.guest_token, process.env.JWT_SECRET);
+        const { guestId } = verifyToken(req.cookies.guest_token);
         const guessData = await getGuestData(guestId);
-        if (guessData) {
-            req.session.guestId = guestId;
-            console.log(`${getDateTime()} - Guest session resumed with id: ${guestId}`);
-        } else {
-            // this means the guest token is invalid, so clear the cookie
-            res.clearCookie('guest_token');
-        }
+        if (guessData) req.session.guestId = guestId;
+        else res.clearCookie('guest_token');
     }
     next();
 };
