@@ -44,7 +44,6 @@ exports.guestAccess = async (req, res, next) => {
         const result = await moveToGuest(username);
         const guestId = result.id;
         req.session.guestId = guestId;
-
         await moveGuestSettings(guestId);
 
         // create a guest token with a 30-day expiration
@@ -54,15 +53,26 @@ exports.guestAccess = async (req, res, next) => {
     }
     // load the guest session if the user has a guest token
     if (req.cookies.guest_token && !req.cookies.login_token) {
-        const { guestId } = verifyToken(req.cookies.guest_token);
-        const guessData = await getGuestData(guestId);
-        if (guessData) req.session.guestId = guestId;
-        else res.clearCookie('guest_token');
+        try {
+            const { guestId } = verifyToken(req.cookies.guest_token);
+            const guessData = await getGuestData(guestId);
+            if (guessData) req.session.guestId = guestId;
+            else res.clearCookie('guest_token');
+        } catch (err) {
+            res.clearCookie('guest_token');
+            console.error(`${getDateTime()} - ${err}`);
+        }
     }
     // check if the login token is valid
     else if (req.cookies.login_token) {
-        const { email } = verifyToken(req.cookies.login_token);
-        if (!email) res.clearCookie('login_token');
+        try {
+            const { email } = verifyToken(req.cookies.login_token);
+            const userData = await getUserData(email);
+            if (!userData) res.clearCookie('login_token');
+        } catch (err) {
+            res.clearCookie('login_token');
+            console.error(`${getDateTime()} - ${err}`);
+        }
     }
     next();
 };
