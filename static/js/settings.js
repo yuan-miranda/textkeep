@@ -1,6 +1,7 @@
 // static/js/settings.js
 import { autoLogin } from "./module_autologin.js";
 import { loadHeaderTo } from "./module_header.js";
+import { loadPersistenNotifications } from "./module_notification.js";
 import { loadSettingsTo, saveSettings } from "./module_settings.js";
 
 async function handleSettings(e) {
@@ -20,6 +21,7 @@ function saveSettingsListener() {
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
+    loadPersistenNotifications();
     await loadHeaderTo(document.querySelector(".header-container"));
     await loadSettingsTo(document.querySelector(".settings-container"));
     saveSettingsListener();

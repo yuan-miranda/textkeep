@@ -1,5 +1,5 @@
 // static/js/verify.js
-import { addNotification } from "./module_notification.js";
+import { addNotification, loadPersistenNotifications } from "./module_notification.js";
 
 async function resendEmail() {
     try {
@@ -49,5 +49,6 @@ function resendEmailCooldown() {
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
+    loadPersistenNotifications();
     resendEmailCooldown();
 });

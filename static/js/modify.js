@@ -2,7 +2,7 @@
 
 // static/js/modify.js
 import { loadHeaderTo } from "./module_header.js";
-import { addNotification } from "./module_notification.js";
+import { addNotification, loadPersistenNotifications } from "./module_notification.js";
 
 const triggerEvent = (element, eventType) => {
     const event = new Event(eventType);
@@ -318,6 +318,7 @@ function submitForm(formData) {
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
+    loadPersistenNotifications();
     await loadHeaderTo(document.querySelector(".header-container"));
     visibilityModes();
     durationModes();

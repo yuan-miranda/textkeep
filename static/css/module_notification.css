@@ -59,12 +59,12 @@ body .container .content .notification-container .notification-warning:hover {
     background-color: #e0a800;
 }
 
-body .container .content .notification-container #notification-close {
+body .container .content .notification-container .notification-close {
     margin-left: 20px;
     font-size: 20px;
     cursor: pointer;
 }
 
-body .container .content .notification-container #notification-close:hover {
+body .container .content .notification-container .notification-close:hover {
     color: #000;
 }

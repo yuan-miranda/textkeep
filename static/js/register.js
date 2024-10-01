@@ -1,6 +1,6 @@
 // static/js/register.js
 import { addError } from "./module_addError.js";
-import { addNotification } from "./module_notification.js";
+import { addNotification, loadPersistenNotifications } from "./module_notification.js";
 
 function handleRegister(e) {
     e.preventDefault();
@@ -54,6 +54,7 @@ async function handleRegisterStatus(response) {
     const data = await response.json();
     switch (response.status) {
         case 200:
+            addNotification(data.data.message, "good");
             window.location.href = `/account/email/verify?email=${encodeURIComponent(data.data.email)}`;
             break;
         case 401:
@@ -99,6 +100,7 @@ function guestButtonListener() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+    loadPersistenNotifications();
     registerButtonListener();
     guestButtonListener();
     togglePasswordVisibilityListener();

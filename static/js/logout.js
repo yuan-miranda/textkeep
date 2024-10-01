@@ -1,5 +1,5 @@
 // static/js/logout.js
-import { addNotification } from "./module_notification.js";
+import { addNotification, loadPersistenNotifications } from "./module_notification.js";
 
 function handleLogout() {
     logout();
@@ -21,6 +21,7 @@ function handleLogoutStatus(response) {
     switch (response.status) {
         case 200:
         case 401:
+            addNotification("You have been logged out", "good");
             window.location.href = "/login";
             break;
         case 500:
@@ -38,5 +39,6 @@ function logoutButtonListener() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+    loadPersistenNotifications();
     logoutButtonListener();
 });

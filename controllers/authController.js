@@ -211,3 +211,13 @@ exports.logout = (req, res) => {
         res.status(500).json({ error: `Error logging out: ${err}` });
     }
 };
+
+exports.admin = (req, res) => {
+    const loginToken = req.cookies ? req.cookies.login_token : null;
+    if (!loginToken) return res.status(401).json({ error: "No login token found" });
+
+    const { email } = verifyToken(loginToken);
+    const adminEmails = process.env.ADMIN_EMAILS.split(',');
+    if (!adminEmails.includes(email)) return res.status(401).json({ error: "Unauthorized access" });
+    res.status(200).json({ message: "Admin access granted" });
+}

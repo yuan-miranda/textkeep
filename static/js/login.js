@@ -1,6 +1,6 @@
 // static/js/login.js
 import { addError } from "./module_addError.js";
-import { addNotification } from "./module_notification.js";
+import { addNotification, loadPersistenNotifications } from "./module_notification.js";
 
 function loginButtonListener() {
     const loginButton = document.getElementById("login-button");
@@ -58,6 +58,7 @@ async function handleLoginStatus(response) {
     const data = await response.json();
     switch (response.status) {
         case 200:
+            addNotification(data.data.message, "good");
             window.location.href = "/";
             break;
         case 401:
@@ -157,6 +158,7 @@ async function handleForgotPasswordStatus(response) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+    loadPersistenNotifications();
     loginButtonListener();
     guestButtonListener();
     togglePasswordVisibilityListener();

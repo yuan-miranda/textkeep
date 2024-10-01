@@ -14,5 +14,6 @@ router.get("/modify", sendPage("modify.html"));
 router.get("/account", sendPage("account.html"));
 router.get("/settings", sendPage("settings.html"));
 router.get("/account/email/verify", sendPage("verify.html"));
+router.get("/admin", sendPage("admin.html"));
 
 module.exports = router;
