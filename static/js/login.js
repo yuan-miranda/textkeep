@@ -58,7 +58,7 @@ async function handleLoginStatus(response) {
     const data = await response.json();
     switch (response.status) {
         case 200:
-            addNotification(data.data.message, "good");
+            addNotification(data.message, "good");
             window.location.href = "/";
             break;
         case 401:

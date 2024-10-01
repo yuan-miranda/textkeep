@@ -54,7 +54,7 @@ async function handleRegisterStatus(response) {
     const data = await response.json();
     switch (response.status) {
         case 200:
-            addNotification(data.data.message, "good");
+            addNotification(data.message, "good");
             window.location.href = `/account/email/verify?email=${encodeURIComponent(data.data.email)}`;
             break;
         case 401:
